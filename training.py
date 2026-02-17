@@ -230,16 +230,37 @@ def imagine_trajectories(rssm : RSSM, action_model : Action, value_model: Value,
     actions = torch.stack(actions, dim=1)
 
     # states is a list composed of next generated states of sequences that are of size B, T, D. Total shape is 
-    # [15, B, T , D]
-    for i in range(horizon):
-        # need to adjust the horizon based on the current value of tau
-        state_value = calculate_state_value(value_model, rewards, lmbda, discount, states, hiddens, i, horizon)
-        state_values.append(state_value)
+    # [B, H, T, D] after stacking
+    all_values = value_model(torch.cat((states, hiddens), dim = -1))
 
-    state_values = torch.stack(state_values, dim=1)
+    state_values = calculate_returns_single(rewards, all_values, lmbda, discount, horizon)
+    
+    # Commented out for faster recursive implementation
+    # for i in range(horizon):
+    #     # need to adjust the horizon based on the current value of tau
+    #     state_value = calculate_state_value(value_model, rewards, lmbda, discount, states, hiddens, i, horizon)
+    #     state_values.append(state_value)
+    # 
+    # state_values = torch.stack(state_values, dim=1)
 
     return state_values, rewards, states, hiddens, actions
-    
+
+def calculate_returns_single(rewards, all_values, lmbda, discount, horizon):
+    """
+    We calculate all_values prior to passing into the calculate_returns_single function
+    They take on shape [B, H, T, D]
+
+    We're interested in finding the summation from 1 to H-1 for all of the states that we start at
+    """
+    B = rewards.size(0)
+    lambda_return = all_values[:, -1]
+    lambda_returns = []
+    for t in reversed(range(horizon)):
+        lambda_return = rewards[:, t] + discount * ((1 - lmbda) * all_values[:, t + 1] + lmbda * lambda_return)
+        lambda_returns.append(lambda_return)
+    lambda_returns.reverse()
+    return torch.stack(lambda_returns, dim=1)
+
 def calculate_state_value(value_model : Value, rewards, lmbda, discount, states, hiddens, tau, horizon):
     '''
     This function will run after a trajectory of a model has been run.

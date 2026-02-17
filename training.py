@@ -350,7 +350,7 @@ def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_di
             action = action_np + noise
             action_clipped = np.clip(action, -1.0, 1.0)
 
-            action_tensor = torch.tensor(action_clipped, dtype=torch.float32).to(device)
+            action_tensor = torch.tensor(action_clipped, dtype=torch.float32).squeeze(0).to(device)
             for _ in range(action_repeat):
                 action_sequence.append(action_tensor)
                 obs, reward, terminated, truncated, info = env.step(action_clipped)

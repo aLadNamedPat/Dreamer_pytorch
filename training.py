@@ -167,6 +167,8 @@ def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_d
                 action_np = action.detach().cpu().numpy()
             action = np.clip(action_np, -1.0, 1.0)
             obs, reward, terminated, truncated, info = env.step(action)
+            action_tensor = torch.tensor(action, dtype=torch.float32).to(device)
+            action = action_tensor  # so next iteration's encode_one_step gets a tensor
             obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1).to(device) / 255.0
 
 
@@ -326,12 +328,12 @@ def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_di
                 action_np = action.detach().cpu().numpy()
             noise = np.random.normal(0, exploration_noise, size=action_np.shape)
             action = action_np + noise
-            action = np.clip(action, -1.0, 1.0)
+            action_clipped = np.clip(action, -1.0, 1.0)
 
-            action_tensor = torch.tensor(action, dtype=torch.float32)
+            action_tensor = torch.tensor(action_clipped, dtype=torch.float32).to(device)
             for _ in range(action_repeat):
                 action_sequence.append(action_tensor)
-                obs, reward, terminated, truncated, info = env.step(action)
+                obs, reward, terminated, truncated, info = env.step(action_clipped)
                 obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1).to(device) / 255.0
                 obs_sequence.append(obs_tensor)
                 reward_sequence.append(torch.tensor(reward, dtype=torch.float32))
@@ -347,7 +349,7 @@ def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_di
                     reason = "terminated" if terminated else "truncated"
                     print(f"  Episode ended at step {episode_steps} ({reason})")
                     break
-
+            action = action_tensor
         # Add episode to buffer (excluding last observation for action alignment)
         buffer.add_episode(obs_sequence[:-1], action_sequence, reward_sequence)
 

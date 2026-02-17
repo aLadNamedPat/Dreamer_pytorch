@@ -152,7 +152,7 @@ def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_d
     for episode in range(num_episodes):
         obs, info = env.reset()
         # Convert from [H, W, C] to [C, H, W] for PyTorch CNN and normalize
-        obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1) / 255.0
+        obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1).to(device) / 255.0
         
         episode_return = 0.0
 
@@ -167,7 +167,7 @@ def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_d
                 action_np = action.detach().cpu().numpy()
             action = np.clip(action_np, -1.0, 1.0)
             obs, reward, terminated, truncated, info = env.step(action)
-            obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1) / 255.0
+            obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1).to(device) / 255.0
 
 
             episode_return += reward
@@ -312,7 +312,7 @@ def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_di
 
         # Reset environment
         obs, info = env.reset()
-        obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1) / 255.0
+        obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1).to(device) / 255.0
         obs_sequence.append(obs_tensor)
 
         state = torch.zeros(1, encoded_dim, device=device)
@@ -332,7 +332,7 @@ def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_di
             for _ in range(action_repeat):
                 action_sequence.append(action_tensor)
                 obs, reward, terminated, truncated, info = env.step(action)
-                obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1) / 255.0
+                obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1).to(device) / 255.0
                 obs_sequence.append(obs_tensor)
                 reward_sequence.append(torch.tensor(reward, dtype=torch.float32))
 

@@ -165,9 +165,9 @@ def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_d
                 state, hidden = rssm.encode_one_step(obs_tensor, state, hidden, action)
                 action = action_model(torch.cat((state, hidden), dim = -1))
                 action_np = action.detach().cpu().numpy()
-            action = np.clip(action_np, -1.0, 1.0)
-            obs, reward, terminated, truncated, info = env.step(action)
-            action_tensor = torch.tensor(action, dtype=torch.float32).to(device)
+            action_clipped = np.clip(action_np, -1.0, 1.0)
+            obs, reward, terminated, truncated, info = env.step(action_clipped.squeeze())
+            action_tensor = torch.tensor(action_clipped, dtype=torch.float32).to(device)
             action = action_tensor  # so next iteration's encode_one_step gets a tensor
             obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1).to(device) / 255.0
 
@@ -350,10 +350,10 @@ def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_di
             action = action_np + noise
             action_clipped = np.clip(action, -1.0, 1.0)
 
-            action_tensor = torch.tensor(action_clipped, dtype=torch.float32).squeeze(0).to(device)
+            action_tensor = torch.tensor(action_clipped, dtype=torch.float32).to(device)
             for _ in range(action_repeat):
-                action_sequence.append(action_tensor)
-                obs, reward, terminated, truncated, info = env.step(action_clipped)
+                action_sequence.append(action_tensor.squeeze(0).cpu())
+                obs, reward, terminated, truncated, info = env.step(action_clipped.squeeze())
                 obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1).to(device) / 255.0
                 obs_sequence.append(obs_tensor.cpu())
                 reward_sequence.append(torch.tensor(reward, dtype=torch.float32))
@@ -370,6 +370,8 @@ def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_di
                     print(f"  Episode ended at step {episode_steps} ({reason})")
                     break
             action = action_tensor
+            if terminated or truncated:
+                break
         # Add episode to buffer (excluding last observation for action alignment)
         buffer.add_episode(obs_sequence[:-1], action_sequence, reward_sequence)
 

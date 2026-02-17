@@ -1,0 +1,155 @@
+   GPU: NVIDIA GeForce RTX 3050 Ti Laptop GPU
+   CUDA Version: 12.1
+
+============================================================
+STARTING RANDOM EPISODE COLLECTION
+Target episodes: 5
+Max steps per episode: 1000
+============================================================
+
+ Episode 1/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.94
+    Step 200/1000 | Reward: 6.86
+    Step 300/1000 | Reward: 9.86
+    Step 400/1000 | Reward: 13.57
+    Step 500/1000 | Reward: 16.48
+    Step 600/1000 | Reward: 18.99
+    Step 700/1000 | Reward: 22.54
+    Step 800/1000 | Reward: 25.89
+    Step 900/1000 | Reward: 30.52
+    Step 1000/1000 | Reward: 34.21
+  Episode ended at step 1000 (terminated)
+     Episode 1 complete!
+     Steps: 1000 | Reward: 34.206
+     Running averages - Steps: 1000.0 | Reward: 34.206
+
+ Episode 2/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 4.04
+    Step 200/1000 | Reward: 7.27
+    Step 300/1000 | Reward: 10.19
+    Step 400/1000 | Reward: 12.55
+    Step 500/1000 | Reward: 15.17
+    Step 600/1000 | Reward: 17.91
+    Step 700/1000 | Reward: 20.32
+    Step 800/1000 | Reward: 23.06
+    Step 900/1000 | Reward: 25.22
+    Step 1000/1000 | Reward: 27.98
+  Episode ended at step 1000 (terminated)
+     Episode 2 complete!
+     Steps: 1000 | Reward: 27.977
+     Running averages - Steps: 1000.0 | Reward: 31.091
+
+ Episode 3/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 4.17
+    Step 200/1000 | Reward: 6.74
+    Step 300/1000 | Reward: 9.16
+    Step 400/1000 | Reward: 12.04
+    Step 500/1000 | Reward: 14.66
+    Step 600/1000 | Reward: 17.55
+    Step 700/1000 | Reward: 19.94
+    Step 800/1000 | Reward: 22.93
+    Step 900/1000 | Reward: 25.46
+    Step 1000/1000 | Reward: 27.98
+  Episode ended at step 1000 (terminated)
+     Episode 3 complete!
+     Steps: 1000 | Reward: 27.984
+     Running averages - Steps: 1000.0 | Reward: 30.056
+
+ Episode 4/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.98
+    Step 200/1000 | Reward: 7.17
+    Step 300/1000 | Reward: 10.05
+    Step 400/1000 | Reward: 12.46
+    Step 500/1000 | Reward: 15.14
+    Step 600/1000 | Reward: 18.11
+    Step 700/1000 | Reward: 21.53
+    Step 800/1000 | Reward: 24.16
+    Step 900/1000 | Reward: 26.59
+    Step 1000/1000 | Reward: 29.79
+  Episode ended at step 1000 (terminated)
+     Episode 4 complete!
+     Steps: 1000 | Reward: 29.794
+     Running averages - Steps: 1000.0 | Reward: 29.990
+
+ Episode 5/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 4.72
+    Step 200/1000 | Reward: 7.27
+    Step 300/1000 | Reward: 9.77
+    Step 400/1000 | Reward: 12.93
+    Step 500/1000 | Reward: 17.48
+    Step 600/1000 | Reward: 20.39
+    Step 700/1000 | Reward: 23.51
+    Step 800/1000 | Reward: 26.26
+    Step 900/1000 | Reward: 29.51
+    Step 1000/1000 | Reward: 32.03
+  Episode ended at step 1000 (terminated)
+     Episode 5 complete!
+     Steps: 1000 | Reward: 32.033
+     Running averages - Steps: 1000.0 | Reward: 30.399
+
+ PROGRESS UPDATE:
+   Episodes completed: 5/5
+   Total timesteps collected: 5000
+   Average episode length: 1000.0 steps
+   Average episode reward: 30.399
+
+============================================================
+RANDOM EPISODE COLLECTION COMPLETE!
+Total episodes: 5
+Total timesteps: 5000
+Average episode length: 1000.0 steps
+Average episode reward: 30.399
+============================================================
+
+ Starting epoch 0/100000...
+   Current dataset size: 5000 timesteps
+   Batch shapes - Obs: torch.Size([50, 50, 3, 64, 64]), Actions: torch.Size([50, 50, 6]), Rewards: torch.Size([50, 50])
+   Processing batch: 50 sequences x 50 timesteps
+   Observation shape: 3x64x64
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+    DEBUG - Recon Loss (Summed): 1386.36
+    DEBUG - Reward Loss: 0.92
+    DEBUG - Raw KL: 0.11
+Epoch 0: World Model Loss: 1398.5990, Actor Model Loss: 0.5779, Value Model Loss : 0.0254Reconstruction: 1386.3558, Reward: 0.9243, KL: 3.0000
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 666, in <module>
+    S=5, B=50, L=50,
+  File "/home/patrick/Documents/Dreamer/training.py", line 498, in train_rssm
+    encoded_obs = rssm.encode(flat_obs)
+  File "/home/patrick/Documents/Dreamer/models/RSSM.py", line 86, in encode
+    return self.encoder(obs)
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/patrick/Documents/Dreamer/models/EncoderDecoder.py", line 23, in forward
+    x = F.relu(self.conv1(x))
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/nn/functional.py", line 1704, in relu
+    result = torch.relu(input)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 294.00 MiB. GPU 0 has a total capacity of 3.71 GiB of which 215.88 MiB is free. Including non-PyTorch memory, this process has 3.47 GiB memory in use. Of the allocated memory 2.50 GiB is allocated by PyTorch, and 881.29 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 666, in <module>
+    S=5, B=50, L=50,
+  File "/home/patrick/Documents/Dreamer/training.py", line 498, in train_rssm
+    encoded_obs = rssm.encode(flat_obs)
+  File "/home/patrick/Documents/Dreamer/models/RSSM.py", line 86, in encode
+    return self.encoder(obs)
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/patrick/Documents/Dreamer/models/EncoderDecoder.py", line 23, in forward
+    x = F.relu(self.conv1(x))
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/nn/functional.py", line 1704, in relu
+    result = torch.relu(input)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 294.00 MiB. GPU 0 has a total capacity of 3.71 GiB of which 215.88 MiB is free. Including non-PyTorch memory, this process has 3.47 GiB memory in use. Of the allocated memory 2.50 GiB is allocated by PyTorch, and 881.29 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

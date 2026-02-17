@@ -1,0 +1,142 @@
+   GPU: NVIDIA GeForce RTX 3050 Ti Laptop GPU
+   CUDA Version: 12.1
+
+============================================================
+STARTING RANDOM EPISODE COLLECTION
+Target episodes: 5
+Max steps per episode: 1000
+============================================================
+
+ Episode 1/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 4.50
+    Step 200/1000 | Reward: 7.15
+    Step 300/1000 | Reward: 9.40
+    Step 400/1000 | Reward: 12.81
+    Step 500/1000 | Reward: 15.26
+    Step 600/1000 | Reward: 18.41
+    Step 700/1000 | Reward: 21.54
+    Step 800/1000 | Reward: 25.02
+    Step 900/1000 | Reward: 28.33
+    Step 1000/1000 | Reward: 31.10
+  Episode ended at step 1000 (terminated)
+     Episode 1 complete!
+     Steps: 1000 | Reward: 31.097
+     Running averages - Steps: 1000.0 | Reward: 31.097
+
+ Episode 2/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.22
+    Step 200/1000 | Reward: 5.91
+    Step 300/1000 | Reward: 9.11
+    Step 400/1000 | Reward: 11.78
+    Step 500/1000 | Reward: 15.31
+    Step 600/1000 | Reward: 17.79
+    Step 700/1000 | Reward: 21.17
+    Step 800/1000 | Reward: 24.19
+    Step 900/1000 | Reward: 26.52
+    Step 1000/1000 | Reward: 29.23
+  Episode ended at step 1000 (terminated)
+     Episode 2 complete!
+     Steps: 1000 | Reward: 29.227
+     Running averages - Steps: 1000.0 | Reward: 30.162
+
+ Episode 3/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 5.00
+    Step 200/1000 | Reward: 8.54
+    Step 300/1000 | Reward: 11.28
+    Step 400/1000 | Reward: 13.75
+    Step 500/1000 | Reward: 17.06
+    Step 600/1000 | Reward: 20.32
+    Step 700/1000 | Reward: 24.01
+    Step 800/1000 | Reward: 27.93
+    Step 900/1000 | Reward: 31.41
+    Step 1000/1000 | Reward: 34.08
+  Episode ended at step 1000 (terminated)
+     Episode 3 complete!
+     Steps: 1000 | Reward: 34.076
+     Running averages - Steps: 1000.0 | Reward: 31.467
+
+ Episode 4/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 4.90
+    Step 200/1000 | Reward: 8.14
+    Step 300/1000 | Reward: 10.66
+    Step 400/1000 | Reward: 13.85
+    Step 500/1000 | Reward: 16.98
+    Step 600/1000 | Reward: 19.60
+    Step 700/1000 | Reward: 21.97
+    Step 800/1000 | Reward: 25.08
+    Step 900/1000 | Reward: 28.08
+    Step 1000/1000 | Reward: 30.77
+  Episode ended at step 1000 (terminated)
+     Episode 4 complete!
+     Steps: 1000 | Reward: 30.771
+     Running averages - Steps: 1000.0 | Reward: 31.293
+
+ Episode 5/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.84
+    Step 200/1000 | Reward: 6.43
+    Step 300/1000 | Reward: 9.65
+    Step 400/1000 | Reward: 12.21
+    Step 500/1000 | Reward: 14.43
+    Step 600/1000 | Reward: 16.97
+    Step 700/1000 | Reward: 19.59
+    Step 800/1000 | Reward: 22.66
+    Step 900/1000 | Reward: 25.36
+    Step 1000/1000 | Reward: 28.21
+  Episode ended at step 1000 (terminated)
+     Episode 5 complete!
+     Steps: 1000 | Reward: 28.209
+     Running averages - Steps: 1000.0 | Reward: 30.676
+
+ PROGRESS UPDATE:
+   Episodes completed: 5/5
+   Total timesteps collected: 5000
+   Average episode length: 1000.0 steps
+   Average episode reward: 30.676
+
+============================================================
+RANDOM EPISODE COLLECTION COMPLETE!
+Total episodes: 5
+Total timesteps: 5000
+Average episode length: 1000.0 steps
+Average episode reward: 30.676
+============================================================
+
+ Starting epoch 0/100000...
+   Current dataset size: 5000 timesteps
+   Batch shapes - Obs: torch.Size([50, 50, 3, 64, 64]), Actions: torch.Size([50, 50, 6]), Rewards: torch.Size([50, 50])
+   Processing batch: 50 sequences x 50 timesteps
+   Observation shape: 3x64x64
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+    DEBUG - Recon Loss (Summed): 869.01
+    DEBUG - Reward Loss: 0.92
+    DEBUG - Raw KL: 0.14
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 665, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 549, in train_rssm
+    state_values, rewards, states, imagined_hiddens, actions = imagine_trajectories(rssm, action_model, value_model, posterior_states.detach(), hiddens.detach(), lmbda = 0.95, discount = 0.99, horizon = 15)
+  File "/home/patrick/Documents/Dreamer/training.py", line 234, in imagine_trajectories
+    state_value = calculate_state_value(value_model, rewards, lmbda, discount, states, hiddens, i, horizon)
+  File "/home/patrick/Documents/Dreamer/training.py", line 270, in calculate_state_value
+    total_sum += (lmbda ** (horizon - tau - 1)) * calculate_beyond_k_state(value_model, rewards, discount, states, horizon - tau, tau, horizon)
+TypeError: calculate_beyond_k_state() missing 1 required positional argument: 'horizon'
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 665, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 549, in train_rssm
+    state_values, rewards, states, imagined_hiddens, actions = imagine_trajectories(rssm, action_model, value_model, posterior_states.detach(), hiddens.detach(), lmbda = 0.95, discount = 0.99, horizon = 15)
+  File "/home/patrick/Documents/Dreamer/training.py", line 234, in imagine_trajectories
+    state_value = calculate_state_value(value_model, rewards, lmbda, discount, states, hiddens, i, horizon)
+  File "/home/patrick/Documents/Dreamer/training.py", line 270, in calculate_state_value
+    total_sum += (lmbda ** (horizon - tau - 1)) * calculate_beyond_k_state(value_model, rewards, discount, states, horizon - tau, tau, horizon)
+TypeError: calculate_beyond_k_state() missing 1 required positional argument: 'horizon'

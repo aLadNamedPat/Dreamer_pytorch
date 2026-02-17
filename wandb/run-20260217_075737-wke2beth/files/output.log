@@ -1,0 +1,142 @@
+   GPU: NVIDIA GeForce RTX 3050 Ti Laptop GPU
+   CUDA Version: 12.1
+
+============================================================
+STARTING RANDOM EPISODE COLLECTION
+Target episodes: 5
+Max steps per episode: 1000
+============================================================
+
+ Episode 1/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 4.06
+    Step 200/1000 | Reward: 9.91
+    Step 300/1000 | Reward: 12.50
+    Step 400/1000 | Reward: 15.93
+    Step 500/1000 | Reward: 18.20
+    Step 600/1000 | Reward: 22.44
+    Step 700/1000 | Reward: 24.46
+    Step 800/1000 | Reward: 28.51
+    Step 900/1000 | Reward: 31.66
+    Step 1000/1000 | Reward: 34.18
+  Episode ended at step 1000 (terminated)
+     Episode 1 complete!
+     Steps: 1000 | Reward: 34.183
+     Running averages - Steps: 1000.0 | Reward: 34.183
+
+ Episode 2/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 5.03
+    Step 200/1000 | Reward: 8.21
+    Step 300/1000 | Reward: 10.53
+    Step 400/1000 | Reward: 14.05
+    Step 500/1000 | Reward: 17.21
+    Step 600/1000 | Reward: 19.41
+    Step 700/1000 | Reward: 21.86
+    Step 800/1000 | Reward: 24.87
+    Step 900/1000 | Reward: 28.32
+    Step 1000/1000 | Reward: 31.29
+  Episode ended at step 1000 (terminated)
+     Episode 2 complete!
+     Steps: 1000 | Reward: 31.295
+     Running averages - Steps: 1000.0 | Reward: 32.739
+
+ Episode 3/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 6.71
+    Step 200/1000 | Reward: 9.25
+    Step 300/1000 | Reward: 12.13
+    Step 400/1000 | Reward: 14.73
+    Step 500/1000 | Reward: 17.19
+    Step 600/1000 | Reward: 20.13
+    Step 700/1000 | Reward: 22.44
+    Step 800/1000 | Reward: 25.42
+    Step 900/1000 | Reward: 28.77
+    Step 1000/1000 | Reward: 31.16
+  Episode ended at step 1000 (terminated)
+     Episode 3 complete!
+     Steps: 1000 | Reward: 31.163
+     Running averages - Steps: 1000.0 | Reward: 32.214
+
+ Episode 4/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.92
+    Step 200/1000 | Reward: 7.26
+    Step 300/1000 | Reward: 9.58
+    Step 400/1000 | Reward: 12.70
+    Step 500/1000 | Reward: 15.61
+    Step 600/1000 | Reward: 18.73
+    Step 700/1000 | Reward: 21.00
+    Step 800/1000 | Reward: 23.47
+    Step 900/1000 | Reward: 26.23
+    Step 1000/1000 | Reward: 29.00
+  Episode ended at step 1000 (terminated)
+     Episode 4 complete!
+     Steps: 1000 | Reward: 28.996
+     Running averages - Steps: 1000.0 | Reward: 31.409
+
+ Episode 5/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 4.85
+    Step 200/1000 | Reward: 7.70
+    Step 300/1000 | Reward: 11.50
+    Step 400/1000 | Reward: 14.55
+    Step 500/1000 | Reward: 17.07
+    Step 600/1000 | Reward: 20.22
+    Step 700/1000 | Reward: 22.95
+    Step 800/1000 | Reward: 26.06
+    Step 900/1000 | Reward: 28.27
+    Step 1000/1000 | Reward: 32.00
+  Episode ended at step 1000 (terminated)
+     Episode 5 complete!
+     Steps: 1000 | Reward: 31.996
+     Running averages - Steps: 1000.0 | Reward: 31.527
+
+ PROGRESS UPDATE:
+   Episodes completed: 5/5
+   Total timesteps collected: 5000
+   Average episode length: 1000.0 steps
+   Average episode reward: 31.527
+
+============================================================
+RANDOM EPISODE COLLECTION COMPLETE!
+Total episodes: 5
+Total timesteps: 5000
+Average episode length: 1000.0 steps
+Average episode reward: 31.527
+============================================================
+
+ Starting epoch 0/100000...
+   Current dataset size: 5000 timesteps
+   Batch shapes - Obs: torch.Size([50, 50, 3, 64, 64]), Actions: torch.Size([50, 50, 6]), Rewards: torch.Size([50, 50])
+   Processing batch: 50 sequences x 50 timesteps
+   Observation shape: 3x64x64
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+    DEBUG - Recon Loss (Summed): 1450.47
+    DEBUG - Reward Loss: 0.92
+    DEBUG - Raw KL: 0.12
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 663, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 547, in train_rssm
+    state_values, rewards, states, imagined_hiddens, actions = imagine_trajectories(rssm, action_model, value_model, posterior_states.detach(), hiddens.detach(), lmbda = 0.95, discount = 0.99, horizon = 15)
+  File "/home/patrick/Documents/Dreamer/training.py", line 217, in imagine_trajectories
+    prev_state, prev_hidden, reward = rssm.imagine_one_step(prev_state, prev_hidden, action)
+  File "/home/patrick/Documents/Dreamer/models/RSSM.py", line 175, in imagine_one_step
+    torch.cat((prev_state, action), dim = -1)
+RuntimeError: Tensors must have same number of dimensions: got 2 and 3
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 663, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 547, in train_rssm
+    state_values, rewards, states, imagined_hiddens, actions = imagine_trajectories(rssm, action_model, value_model, posterior_states.detach(), hiddens.detach(), lmbda = 0.95, discount = 0.99, horizon = 15)
+  File "/home/patrick/Documents/Dreamer/training.py", line 217, in imagine_trajectories
+    prev_state, prev_hidden, reward = rssm.imagine_one_step(prev_state, prev_hidden, action)
+  File "/home/patrick/Documents/Dreamer/models/RSSM.py", line 175, in imagine_one_step
+    torch.cat((prev_state, action), dim = -1)
+RuntimeError: Tensors must have same number of dimensions: got 2 and 3

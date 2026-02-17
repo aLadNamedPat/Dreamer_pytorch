@@ -1,0 +1,146 @@
+   GPU: NVIDIA GeForce RTX 3050 Ti Laptop GPU
+   CUDA Version: 12.1
+
+============================================================
+STARTING RANDOM EPISODE COLLECTION
+Target episodes: 5
+Max steps per episode: 1000
+============================================================
+
+ Episode 1/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.88
+    Step 200/1000 | Reward: 6.42
+    Step 300/1000 | Reward: 9.55
+    Step 400/1000 | Reward: 12.19
+    Step 500/1000 | Reward: 15.89
+    Step 600/1000 | Reward: 19.15
+    Step 700/1000 | Reward: 21.59
+    Step 800/1000 | Reward: 24.56
+    Step 900/1000 | Reward: 26.85
+    Step 1000/1000 | Reward: 29.56
+  Episode ended at step 1000 (terminated)
+     Episode 1 complete!
+     Steps: 1000 | Reward: 29.565
+     Running averages - Steps: 1000.0 | Reward: 29.565
+
+ Episode 2/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.57
+    Step 200/1000 | Reward: 5.76
+    Step 300/1000 | Reward: 8.84
+    Step 400/1000 | Reward: 12.60
+    Step 500/1000 | Reward: 15.67
+    Step 600/1000 | Reward: 18.96
+    Step 700/1000 | Reward: 21.90
+    Step 800/1000 | Reward: 24.31
+    Step 900/1000 | Reward: 27.34
+    Step 1000/1000 | Reward: 29.89
+  Episode ended at step 1000 (terminated)
+     Episode 2 complete!
+     Steps: 1000 | Reward: 29.888
+     Running averages - Steps: 1000.0 | Reward: 29.726
+
+ Episode 3/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.58
+    Step 200/1000 | Reward: 6.16
+    Step 300/1000 | Reward: 9.50
+    Step 400/1000 | Reward: 11.88
+    Step 500/1000 | Reward: 15.00
+    Step 600/1000 | Reward: 17.28
+    Step 700/1000 | Reward: 20.55
+    Step 800/1000 | Reward: 23.17
+    Step 900/1000 | Reward: 26.13
+    Step 1000/1000 | Reward: 28.79
+  Episode ended at step 1000 (terminated)
+     Episode 3 complete!
+     Steps: 1000 | Reward: 28.786
+     Running averages - Steps: 1000.0 | Reward: 29.413
+
+ Episode 4/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 4.65
+    Step 200/1000 | Reward: 6.57
+    Step 300/1000 | Reward: 9.58
+    Step 400/1000 | Reward: 12.40
+    Step 500/1000 | Reward: 14.95
+    Step 600/1000 | Reward: 17.68
+    Step 700/1000 | Reward: 20.47
+    Step 800/1000 | Reward: 22.98
+    Step 900/1000 | Reward: 25.82
+    Step 1000/1000 | Reward: 29.08
+  Episode ended at step 1000 (terminated)
+     Episode 4 complete!
+     Steps: 1000 | Reward: 29.084
+     Running averages - Steps: 1000.0 | Reward: 29.331
+
+ Episode 5/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 5.03
+    Step 200/1000 | Reward: 8.01
+    Step 300/1000 | Reward: 9.69
+    Step 400/1000 | Reward: 12.76
+    Step 500/1000 | Reward: 16.03
+    Step 600/1000 | Reward: 19.04
+    Step 700/1000 | Reward: 22.11
+    Step 800/1000 | Reward: 25.09
+    Step 900/1000 | Reward: 28.08
+    Step 1000/1000 | Reward: 31.65
+  Episode ended at step 1000 (terminated)
+     Episode 5 complete!
+     Steps: 1000 | Reward: 31.646
+     Running averages - Steps: 1000.0 | Reward: 29.794
+
+ PROGRESS UPDATE:
+   Episodes completed: 5/5
+   Total timesteps collected: 5000
+   Average episode length: 1000.0 steps
+   Average episode reward: 29.794
+
+============================================================
+RANDOM EPISODE COLLECTION COMPLETE!
+Total episodes: 5
+Total timesteps: 5000
+Average episode length: 1000.0 steps
+Average episode reward: 29.794
+============================================================
+
+ Starting epoch 0/100000...
+   Current dataset size: 5000 timesteps
+   Batch shapes - Obs: torch.Size([50, 50, 3, 64, 64]), Actions: torch.Size([50, 50, 6]), Rewards: torch.Size([50, 50])
+   Processing batch: 50 sequences x 50 timesteps
+   Observation shape: 3x64x64
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+    DEBUG - Recon Loss (Summed): 1633.25
+    DEBUG - Reward Loss: 0.92
+    DEBUG - Raw KL: 0.12
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 665, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 559, in train_rssm
+    value_loss.backward()
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/_tensor.py", line 581, in backward
+    torch.autograd.backward(
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+    _engine_run_backward(
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [6, 6]], which is output 0 of AsStridedBackward0, is at version 2; expected version 1 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 665, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 559, in train_rssm
+    value_loss.backward()
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/_tensor.py", line 581, in backward
+    torch.autograd.backward(
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347, in backward
+    _engine_run_backward(
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/autograd/graph.py", line 825, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [6, 6]], which is output 0 of AsStridedBackward0, is at version 2; expected version 1 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).

@@ -1,0 +1,148 @@
+   GPU: NVIDIA GeForce RTX 3050 Ti Laptop GPU
+   CUDA Version: 12.1
+
+============================================================
+STARTING RANDOM EPISODE COLLECTION
+Target episodes: 5
+Max steps per episode: 1000
+============================================================
+
+ Episode 1/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 4.40
+    Step 200/1000 | Reward: 8.03
+    Step 300/1000 | Reward: 11.19
+    Step 400/1000 | Reward: 14.36
+    Step 500/1000 | Reward: 17.65
+    Step 600/1000 | Reward: 20.07
+    Step 700/1000 | Reward: 22.96
+    Step 800/1000 | Reward: 25.19
+    Step 900/1000 | Reward: 28.14
+    Step 1000/1000 | Reward: 32.76
+  Episode ended at step 1000 (terminated)
+     Episode 1 complete!
+     Steps: 1000 | Reward: 32.764
+     Running averages - Steps: 1000.0 | Reward: 32.764
+
+ Episode 2/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 11.28
+    Step 200/1000 | Reward: 13.97
+    Step 300/1000 | Reward: 17.48
+    Step 400/1000 | Reward: 21.35
+    Step 500/1000 | Reward: 23.56
+    Step 600/1000 | Reward: 26.34
+    Step 700/1000 | Reward: 30.09
+    Step 800/1000 | Reward: 34.26
+    Step 900/1000 | Reward: 37.42
+    Step 1000/1000 | Reward: 40.03
+  Episode ended at step 1000 (terminated)
+     Episode 2 complete!
+     Steps: 1000 | Reward: 40.034
+     Running averages - Steps: 1000.0 | Reward: 36.399
+
+ Episode 3/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 6.28
+    Step 200/1000 | Reward: 9.13
+    Step 300/1000 | Reward: 11.73
+    Step 400/1000 | Reward: 14.04
+    Step 500/1000 | Reward: 16.19
+    Step 600/1000 | Reward: 19.09
+    Step 700/1000 | Reward: 21.18
+    Step 800/1000 | Reward: 23.22
+    Step 900/1000 | Reward: 26.95
+    Step 1000/1000 | Reward: 30.15
+  Episode ended at step 1000 (terminated)
+     Episode 3 complete!
+     Steps: 1000 | Reward: 30.148
+     Running averages - Steps: 1000.0 | Reward: 34.315
+
+ Episode 4/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 6.69
+    Step 200/1000 | Reward: 9.73
+    Step 300/1000 | Reward: 12.42
+    Step 400/1000 | Reward: 14.96
+    Step 500/1000 | Reward: 18.47
+    Step 600/1000 | Reward: 21.45
+    Step 700/1000 | Reward: 24.44
+    Step 800/1000 | Reward: 27.03
+    Step 900/1000 | Reward: 29.82
+    Step 1000/1000 | Reward: 32.30
+  Episode ended at step 1000 (terminated)
+     Episode 4 complete!
+     Steps: 1000 | Reward: 32.305
+     Running averages - Steps: 1000.0 | Reward: 33.813
+
+ Episode 5/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 5.04
+    Step 200/1000 | Reward: 8.61
+    Step 300/1000 | Reward: 12.04
+    Step 400/1000 | Reward: 14.63
+    Step 500/1000 | Reward: 17.08
+    Step 600/1000 | Reward: 19.78
+    Step 700/1000 | Reward: 22.60
+    Step 800/1000 | Reward: 26.41
+    Step 900/1000 | Reward: 29.39
+    Step 1000/1000 | Reward: 32.17
+  Episode ended at step 1000 (terminated)
+     Episode 5 complete!
+     Steps: 1000 | Reward: 32.166
+     Running averages - Steps: 1000.0 | Reward: 33.483
+
+ PROGRESS UPDATE:
+   Episodes completed: 5/5
+   Total timesteps collected: 5000
+   Average episode length: 1000.0 steps
+   Average episode reward: 33.483
+
+============================================================
+RANDOM EPISODE COLLECTION COMPLETE!
+Total episodes: 5
+Total timesteps: 5000
+Average episode length: 1000.0 steps
+Average episode reward: 33.483
+============================================================
+
+ Starting epoch 0/100000...
+   Current dataset size: 5000 timesteps
+   Batch shapes - Obs: torch.Size([50, 50, 3, 64, 64]), Actions: torch.Size([50, 50, 6]), Rewards: torch.Size([50, 50])
+   Processing batch: 50 sequences x 50 timesteps
+   Observation shape: 3x64x64
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+    DEBUG - Recon Loss (Summed): 909.60
+    DEBUG - Reward Loss: 0.92
+    DEBUG - Raw KL: 0.14
+/home/patrick/Documents/Dreamer/training.py:188: UserWarning: Using a target size (torch.Size([2450, 15])) that is different to the input size (torch.Size([2450, 16, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  value_loss = F.mse_loss(value_preds, state_values.detach())
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 665, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 551, in train_rssm
+    actor_loss, value_loss = compute_action_value_loss(
+  File "/home/patrick/Documents/Dreamer/training.py", line 188, in compute_action_value_loss
+    value_loss = F.mse_loss(value_preds, state_values.detach())
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/nn/functional.py", line 3791, in mse_loss
+    expanded_input, expanded_target = torch.broadcast_tensors(input, target)
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/functional.py", line 76, in broadcast_tensors
+    return _VF.broadcast_tensors(tensors)  # type: ignore[attr-defined]
+RuntimeError: The size of tensor a (16) must match the size of tensor b (2450) at non-singleton dimension 1
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 665, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 551, in train_rssm
+    actor_loss, value_loss = compute_action_value_loss(
+  File "/home/patrick/Documents/Dreamer/training.py", line 188, in compute_action_value_loss
+    value_loss = F.mse_loss(value_preds, state_values.detach())
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/nn/functional.py", line 3791, in mse_loss
+    expanded_input, expanded_target = torch.broadcast_tensors(input, target)
+  File "/home/patrick/.local/lib/python3.10/site-packages/torch/functional.py", line 76, in broadcast_tensors
+    return _VF.broadcast_tensors(tensors)  # type: ignore[attr-defined]
+RuntimeError: The size of tensor a (16) must match the size of tensor b (2450) at non-singleton dimension 1

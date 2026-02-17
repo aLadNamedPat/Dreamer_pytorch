@@ -1,0 +1,11 @@
+{"time":"2026-02-17T08:06:51.706324183-05:00","level":"INFO","msg":"stream: starting","core version":"0.25.0"}
+{"time":"2026-02-17T08:06:51.929157625-05:00","level":"INFO","msg":"stream: created new stream","id":"gppl9ocs"}
+{"time":"2026-02-17T08:06:51.929374415-05:00","level":"INFO","msg":"handler: started","stream_id":"gppl9ocs"}
+{"time":"2026-02-17T08:06:51.929669219-05:00","level":"INFO","msg":"stream: started","id":"gppl9ocs"}
+{"time":"2026-02-17T08:06:51.929735639-05:00","level":"INFO","msg":"writer: started","stream_id":"gppl9ocs"}
+{"time":"2026-02-17T08:06:51.929739969-05:00","level":"INFO","msg":"sender: started","stream_id":"gppl9ocs"}
+{"time":"2026-02-17T08:07:34.763399661-05:00","level":"INFO","msg":"stream: closing","id":"gppl9ocs"}
+{"time":"2026-02-17T08:07:35.006759663-05:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-02-17T08:07:35.171100518-05:00","level":"INFO","msg":"handler: closed","stream_id":"gppl9ocs"}
+{"time":"2026-02-17T08:07:35.171357188-05:00","level":"INFO","msg":"sender: closed","stream_id":"gppl9ocs"}
+{"time":"2026-02-17T08:07:35.171393157-05:00","level":"INFO","msg":"stream: closed","id":"gppl9ocs"}

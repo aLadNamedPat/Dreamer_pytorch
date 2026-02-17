@@ -1,0 +1,80 @@
+_wandb:
+    value:
+        cli_version: 0.25.0
+        e:
+            sqd991oi81lbuaav5kdbq7n4fdfkmzdw:
+                codePath: training.py
+                codePathLocal: training.py
+                cpu_count: 8
+                cpu_count_logical: 16
+                cudaVersion: "12.7"
+                disk:
+                    /:
+                        total: "343158915072"
+                        used: "312813146112"
+                email: pattheboy135@gmail.com
+                executable: /usr/bin/python3
+                git:
+                    commit: 0ebfcb1af2cb6612d4f7d9c27f4226bb63674f9f
+                    remote: https://github.com/aLadNamedPat/Dreamer_pytorch.git
+                gpu: NVIDIA GeForce RTX 3050 Ti Laptop GPU
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Ampere
+                      cudaCores: 2560
+                      memoryTotal: "4294967296"
+                      name: NVIDIA GeForce RTX 3050 Ti Laptop GPU
+                      uuid: GPU-02c3ac50-f157-6fa9-8df8-486fa4c6e0f6
+                host: patrick-Swift-SFX14-41G
+                memory:
+                    total: "16081920000"
+                os: Linux-6.8.0-94-generic-x86_64-with-glibc2.35
+                program: /home/patrick/Documents/Dreamer/training.py
+                python: CPython 3.10.12
+                root: /home/patrick/Documents/Dreamer
+                startedAt: "2026-02-17T13:12:01.838916Z"
+                writerId: sqd991oi81lbuaav5kdbq7n4fdfkmzdw
+        m: []
+        python_version: 3.10.12
+        t:
+            "1":
+                - 1
+                - 105
+            "2":
+                - 1
+                - 105
+            "3":
+                - 16
+            "4": 3.10.12
+            "5": 0.25.0
+            "12": 0.25.0
+            "13": linux-x86_64
+B:
+    value: 50
+L:
+    value: 50
+S:
+    value: 5
+action_dim:
+    value: 6
+action_repeat:
+    value: 2
+encoded_size:
+    value: 1024
+environment:
+    value: DMC-walker-walk
+hidden_size:
+    value: 200
+latent_size:
+    value: 30
+num_epochs:
+    value: 100000
+obs_shape:
+    value:
+        - 64
+        - 64
+        - 3
+plan_every:
+    value: 100
+planning_episodes:
+    value: 1

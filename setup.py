@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 def initialize_dmc_environment():
     """Initialize DMC environment before any imports"""

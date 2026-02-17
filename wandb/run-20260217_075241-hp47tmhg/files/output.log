@@ -1,0 +1,31 @@
+   GPU: NVIDIA GeForce RTX 3050 Ti Laptop GPU
+   CUDA Version: 12.1
+
+============================================================
+STARTING RANDOM EPISODE COLLECTION
+Target episodes: 5
+Max steps per episode: 1000
+============================================================
+
+ Episode 1/5 - Starting...
+  Resetting environment...
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 661, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 445, in train_rssm
+    dataset = collect_random_episodes(env, S)
+  File "/home/patrick/Documents/Dreamer/training.py", line 51, in collect_random_episodes
+    action = env.action_space.sample()
+  File "/home/patrick/Documents/Dreamer/setup.py", line 250, in sample
+    return np.random.uniform(self.low, self.high)
+NameError: name 'np' is not defined
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 661, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 445, in train_rssm
+    dataset = collect_random_episodes(env, S)
+  File "/home/patrick/Documents/Dreamer/training.py", line 51, in collect_random_episodes
+    action = env.action_space.sample()
+  File "/home/patrick/Documents/Dreamer/setup.py", line 250, in sample
+    return np.random.uniform(self.low, self.high)
+NameError: name 'np' is not defined

@@ -1,0 +1,146 @@
+   GPU: NVIDIA GeForce RTX 3050 Ti Laptop GPU
+   CUDA Version: 12.1
+
+============================================================
+STARTING RANDOM EPISODE COLLECTION
+Target episodes: 5
+Max steps per episode: 1000
+============================================================
+
+ Episode 1/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.94
+    Step 200/1000 | Reward: 7.36
+    Step 300/1000 | Reward: 9.95
+    Step 400/1000 | Reward: 12.31
+    Step 500/1000 | Reward: 14.75
+    Step 600/1000 | Reward: 19.90
+    Step 700/1000 | Reward: 22.75
+    Step 800/1000 | Reward: 25.77
+    Step 900/1000 | Reward: 28.82
+    Step 1000/1000 | Reward: 31.37
+  Episode ended at step 1000 (terminated)
+     Episode 1 complete!
+     Steps: 1000 | Reward: 31.368
+     Running averages - Steps: 1000.0 | Reward: 31.368
+
+ Episode 2/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 5.47
+    Step 200/1000 | Reward: 8.73
+    Step 300/1000 | Reward: 11.46
+    Step 400/1000 | Reward: 14.12
+    Step 500/1000 | Reward: 17.71
+    Step 600/1000 | Reward: 21.75
+    Step 700/1000 | Reward: 25.15
+    Step 800/1000 | Reward: 27.79
+    Step 900/1000 | Reward: 31.88
+    Step 1000/1000 | Reward: 36.26
+  Episode ended at step 1000 (terminated)
+     Episode 2 complete!
+     Steps: 1000 | Reward: 36.260
+     Running averages - Steps: 1000.0 | Reward: 33.814
+
+ Episode 3/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.99
+    Step 200/1000 | Reward: 6.47
+    Step 300/1000 | Reward: 9.68
+    Step 400/1000 | Reward: 12.54
+    Step 500/1000 | Reward: 15.74
+    Step 600/1000 | Reward: 18.69
+    Step 700/1000 | Reward: 22.23
+    Step 800/1000 | Reward: 25.47
+    Step 900/1000 | Reward: 28.03
+    Step 1000/1000 | Reward: 30.79
+  Episode ended at step 1000 (terminated)
+     Episode 3 complete!
+     Steps: 1000 | Reward: 30.786
+     Running averages - Steps: 1000.0 | Reward: 32.805
+
+ Episode 4/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 4.30
+    Step 200/1000 | Reward: 7.88
+    Step 300/1000 | Reward: 10.78
+    Step 400/1000 | Reward: 13.72
+    Step 500/1000 | Reward: 16.34
+    Step 600/1000 | Reward: 18.91
+    Step 700/1000 | Reward: 22.09
+    Step 800/1000 | Reward: 25.28
+    Step 900/1000 | Reward: 28.56
+    Step 1000/1000 | Reward: 31.20
+  Episode ended at step 1000 (terminated)
+     Episode 4 complete!
+     Steps: 1000 | Reward: 31.204
+     Running averages - Steps: 1000.0 | Reward: 32.405
+
+ Episode 5/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 4.41
+    Step 200/1000 | Reward: 7.07
+    Step 300/1000 | Reward: 9.32
+    Step 400/1000 | Reward: 12.25
+    Step 500/1000 | Reward: 14.78
+    Step 600/1000 | Reward: 17.48
+    Step 700/1000 | Reward: 20.14
+    Step 800/1000 | Reward: 23.67
+    Step 900/1000 | Reward: 26.79
+    Step 1000/1000 | Reward: 30.33
+  Episode ended at step 1000 (terminated)
+     Episode 5 complete!
+     Steps: 1000 | Reward: 30.331
+     Running averages - Steps: 1000.0 | Reward: 31.990
+
+ PROGRESS UPDATE:
+   Episodes completed: 5/5
+   Total timesteps collected: 5000
+   Average episode length: 1000.0 steps
+   Average episode reward: 31.990
+
+============================================================
+RANDOM EPISODE COLLECTION COMPLETE!
+Total episodes: 5
+Total timesteps: 5000
+Average episode length: 1000.0 steps
+Average episode reward: 31.990
+============================================================
+
+ Starting epoch 0/100000...
+   Current dataset size: 5000 timesteps
+   Batch shapes - Obs: torch.Size([50, 50, 3, 64, 64]), Actions: torch.Size([50, 50, 6]), Rewards: torch.Size([50, 50])
+   Processing batch: 50 sequences x 50 timesteps
+   Observation shape: 3x64x64
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+    DEBUG - Recon Loss (Summed): 1849.77
+    DEBUG - Reward Loss: 0.92
+    DEBUG - Raw KL: 0.15
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 668, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 552, in train_rssm
+    state_values, rewards, states, imagined_hiddens, actions = imagine_trajectories(rssm, action_model, value_model, posterior_states.detach(), hiddens.detach(), lmbda = 0.95, discount = 0.99, horizon = 15)
+  File "/home/patrick/Documents/Dreamer/training.py", line 237, in imagine_trajectories
+    state_value = calculate_state_value(value_model, rewards, lmbda, discount, states, hiddens, i, horizon)
+  File "/home/patrick/Documents/Dreamer/training.py", line 269, in calculate_state_value
+    est_state_val = calculate_beyond_k_state(value_model, rewards, discount, states, hiddens, i, tau, horizon)
+  File "/home/patrick/Documents/Dreamer/training.py", line 284, in calculate_beyond_k_state
+    summed_value += discount ** (i - tau) * rewards[i]
+RuntimeError: The size of tensor a (16) must match the size of tensor b (15) at non-singleton dimension 0
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 668, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 552, in train_rssm
+    state_values, rewards, states, imagined_hiddens, actions = imagine_trajectories(rssm, action_model, value_model, posterior_states.detach(), hiddens.detach(), lmbda = 0.95, discount = 0.99, horizon = 15)
+  File "/home/patrick/Documents/Dreamer/training.py", line 237, in imagine_trajectories
+    state_value = calculate_state_value(value_model, rewards, lmbda, discount, states, hiddens, i, horizon)
+  File "/home/patrick/Documents/Dreamer/training.py", line 269, in calculate_state_value
+    est_state_val = calculate_beyond_k_state(value_model, rewards, discount, states, hiddens, i, tau, horizon)
+  File "/home/patrick/Documents/Dreamer/training.py", line 284, in calculate_beyond_k_state
+    summed_value += discount ** (i - tau) * rewards[i]
+RuntimeError: The size of tensor a (16) must match the size of tensor b (15) at non-singleton dimension 0

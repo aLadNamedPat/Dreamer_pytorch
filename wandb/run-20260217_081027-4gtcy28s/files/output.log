@@ -1,0 +1,157 @@
+   GPU: NVIDIA GeForce RTX 3050 Ti Laptop GPU
+   CUDA Version: 12.1
+
+============================================================
+STARTING RANDOM EPISODE COLLECTION
+Target episodes: 5
+Max steps per episode: 1000
+============================================================
+
+ Episode 1/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.34
+    Step 200/1000 | Reward: 6.20
+    Step 300/1000 | Reward: 9.51
+    Step 400/1000 | Reward: 12.46
+    Step 500/1000 | Reward: 15.02
+    Step 600/1000 | Reward: 17.98
+    Step 700/1000 | Reward: 20.35
+    Step 800/1000 | Reward: 22.99
+    Step 900/1000 | Reward: 25.43
+    Step 1000/1000 | Reward: 28.74
+  Episode ended at step 1000 (terminated)
+     Episode 1 complete!
+     Steps: 1000 | Reward: 28.740
+     Running averages - Steps: 1000.0 | Reward: 28.740
+
+ Episode 2/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.97
+    Step 200/1000 | Reward: 6.88
+    Step 300/1000 | Reward: 16.53
+    Step 400/1000 | Reward: 19.84
+    Step 500/1000 | Reward: 22.55
+    Step 600/1000 | Reward: 25.03
+    Step 700/1000 | Reward: 27.40
+    Step 800/1000 | Reward: 30.30
+    Step 900/1000 | Reward: 33.07
+    Step 1000/1000 | Reward: 36.04
+  Episode ended at step 1000 (terminated)
+     Episode 2 complete!
+     Steps: 1000 | Reward: 36.036
+     Running averages - Steps: 1000.0 | Reward: 32.388
+
+ Episode 3/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 3.67
+    Step 200/1000 | Reward: 6.82
+    Step 300/1000 | Reward: 10.24
+    Step 400/1000 | Reward: 13.25
+    Step 500/1000 | Reward: 16.99
+    Step 600/1000 | Reward: 21.05
+    Step 700/1000 | Reward: 23.89
+    Step 800/1000 | Reward: 25.89
+    Step 900/1000 | Reward: 29.08
+    Step 1000/1000 | Reward: 31.76
+  Episode ended at step 1000 (terminated)
+     Episode 3 complete!
+     Steps: 1000 | Reward: 31.762
+     Running averages - Steps: 1000.0 | Reward: 32.179
+
+ Episode 4/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 4.39
+    Step 200/1000 | Reward: 7.07
+    Step 300/1000 | Reward: 10.27
+    Step 400/1000 | Reward: 13.29
+    Step 500/1000 | Reward: 16.00
+    Step 600/1000 | Reward: 18.50
+    Step 700/1000 | Reward: 21.66
+    Step 800/1000 | Reward: 23.79
+    Step 900/1000 | Reward: 28.22
+    Step 1000/1000 | Reward: 31.15
+  Episode ended at step 1000 (terminated)
+     Episode 4 complete!
+     Steps: 1000 | Reward: 31.153
+     Running averages - Steps: 1000.0 | Reward: 31.923
+
+ Episode 5/5 - Starting...
+  Resetting environment...
+    Step 100/1000 | Reward: 5.89
+    Step 200/1000 | Reward: 8.77
+    Step 300/1000 | Reward: 13.15
+    Step 400/1000 | Reward: 16.29
+    Step 500/1000 | Reward: 19.78
+    Step 600/1000 | Reward: 22.23
+    Step 700/1000 | Reward: 24.34
+    Step 800/1000 | Reward: 27.39
+    Step 900/1000 | Reward: 32.41
+    Step 1000/1000 | Reward: 35.19
+  Episode ended at step 1000 (terminated)
+     Episode 5 complete!
+     Steps: 1000 | Reward: 35.185
+     Running averages - Steps: 1000.0 | Reward: 32.575
+
+ PROGRESS UPDATE:
+   Episodes completed: 5/5
+   Total timesteps collected: 5000
+   Average episode length: 1000.0 steps
+   Average episode reward: 32.575
+
+============================================================
+RANDOM EPISODE COLLECTION COMPLETE!
+Total episodes: 5
+Total timesteps: 5000
+Average episode length: 1000.0 steps
+Average episode reward: 32.575
+============================================================
+
+ Starting epoch 0/100000...
+   Current dataset size: 5000 timesteps
+   Batch shapes - Obs: torch.Size([50, 50, 3, 64, 64]), Actions: torch.Size([50, 50, 6]), Rewards: torch.Size([50, 50])
+   Processing batch: 50 sequences x 50 timesteps
+   Observation shape: 3x64x64
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+        DECODE DEBUG - Hidden: torch.Size([50, 200]), Posterior: torch.Size([50, 30])
+        DECODE DEBUG - Combined input: torch.Size([50, 230])
+    DEBUG - Recon Loss (Summed): 1363.86
+    DEBUG - Reward Loss: 0.92
+    DEBUG - Raw KL: 0.11
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+value shape: torch.Size([2450, 1]), rewards[:, 0] shape: torch.Size([2450, 1])
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 666, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 550, in train_rssm
+    state_values, rewards, states, imagined_hiddens, actions = imagine_trajectories(rssm, action_model, value_model, posterior_states.detach(), hiddens.detach(), lmbda = 0.95, discount = 0.99, horizon = 15)
+  File "/home/patrick/Documents/Dreamer/training.py", line 234, in imagine_trajectories
+    state_value = calculate_state_value(value_model, rewards, lmbda, discount, states, hiddens, i, horizon)
+  File "/home/patrick/Documents/Dreamer/training.py", line 270, in calculate_state_value
+    total_sum += (lmbda ** (horizon - tau - 1)) * calculate_beyond_k_state(value_model, rewards, discount, states, hiddens, horizon - tau, tau, horizon)
+RuntimeError: output with shape [2450] doesn't match the broadcast shape [2450, 2450]
+Traceback (most recent call last):
+  File "/home/patrick/Documents/Dreamer/training.py", line 666, in <module>
+    trained_rssm = train_rssm(
+  File "/home/patrick/Documents/Dreamer/training.py", line 550, in train_rssm
+    state_values, rewards, states, imagined_hiddens, actions = imagine_trajectories(rssm, action_model, value_model, posterior_states.detach(), hiddens.detach(), lmbda = 0.95, discount = 0.99, horizon = 15)
+  File "/home/patrick/Documents/Dreamer/training.py", line 234, in imagine_trajectories
+    state_value = calculate_state_value(value_model, rewards, lmbda, discount, states, hiddens, i, horizon)
+  File "/home/patrick/Documents/Dreamer/training.py", line 270, in calculate_state_value
+    total_sum += (lmbda ** (horizon - tau - 1)) * calculate_beyond_k_state(value_model, rewards, discount, states, hiddens, horizon - tau, tau, horizon)
+RuntimeError: output with shape [2450] doesn't match the broadcast shape [2450, 2450]

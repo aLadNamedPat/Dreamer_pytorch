@@ -1,0 +1,11 @@
+{"time":"2026-02-17T08:14:04.521883559-05:00","level":"INFO","msg":"stream: starting","core version":"0.25.0"}
+{"time":"2026-02-17T08:14:04.736999432-05:00","level":"INFO","msg":"stream: created new stream","id":"neyuxn24"}
+{"time":"2026-02-17T08:14:04.737206025-05:00","level":"INFO","msg":"handler: started","stream_id":"neyuxn24"}
+{"time":"2026-02-17T08:14:04.737430289-05:00","level":"INFO","msg":"stream: started","id":"neyuxn24"}
+{"time":"2026-02-17T08:14:04.737537636-05:00","level":"INFO","msg":"writer: started","stream_id":"neyuxn24"}
+{"time":"2026-02-17T08:14:04.737607618-05:00","level":"INFO","msg":"sender: started","stream_id":"neyuxn24"}
+{"time":"2026-02-17T08:14:47.334507452-05:00","level":"INFO","msg":"stream: closing","id":"neyuxn24"}
+{"time":"2026-02-17T08:14:47.525680362-05:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-02-17T08:14:47.689711815-05:00","level":"INFO","msg":"handler: closed","stream_id":"neyuxn24"}
+{"time":"2026-02-17T08:14:47.690001381-05:00","level":"INFO","msg":"sender: closed","stream_id":"neyuxn24"}
+{"time":"2026-02-17T08:14:47.690024289-05:00","level":"INFO","msg":"stream: closed","id":"neyuxn24"}

@@ -1,0 +1,21 @@
+2026-02-17 08:18:00,306 INFO    MainThread:198999 [wandb_setup.py:_flush():81] Current SDK version is 0.25.0
+2026-02-17 08:18:00,306 INFO    MainThread:198999 [wandb_setup.py:_flush():81] Configure stats pid to 198999
+2026-02-17 08:18:00,306 INFO    MainThread:198999 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2026-02-17 08:18:00,306 INFO    MainThread:198999 [wandb_init.py:setup_run_log_directory():717] Logging user logs to /home/patrick/Documents/Dreamer/wandb/run-20260217_081800-t7dhbnle/logs/debug.log
+2026-02-17 08:18:00,306 INFO    MainThread:198999 [wandb_init.py:setup_run_log_directory():718] Logging internal logs to /home/patrick/Documents/Dreamer/wandb/run-20260217_081800-t7dhbnle/logs/debug-internal.log
+2026-02-17 08:18:00,306 INFO    MainThread:198999 [wandb_init.py:init():844] calling init triggers
+2026-02-17 08:18:00,306 INFO    MainThread:198999 [wandb_init.py:init():849] wandb.init called with sweep_config: {}
+config: {'S': 5, 'B': 50, 'L': 50, 'num_epochs': 100000, 'encoded_size': 1024, 'latent_size': 30, 'hidden_size': 200, 'obs_shape': (64, 64, 3), 'action_dim': 6, 'plan_every': 100, 'planning_episodes': 1, 'action_repeat': 2, 'environment': 'DMC-walker-walk', '_wandb': {}}
+2026-02-17 08:18:00,306 INFO    MainThread:198999 [wandb_init.py:init():892] starting backend
+2026-02-17 08:18:00,517 INFO    MainThread:198999 [wandb_init.py:init():895] sending inform_init request
+2026-02-17 08:18:00,520 INFO    MainThread:198999 [wandb_init.py:init():903] backend started and connected
+2026-02-17 08:18:00,534 INFO    MainThread:198999 [wandb_init.py:init():973] updated telemetry
+2026-02-17 08:18:00,537 INFO    MainThread:198999 [wandb_init.py:init():997] communicating run to backend with 90.0 second timeout
+2026-02-17 08:18:00,997 INFO    MainThread:198999 [wandb_init.py:init():1042] starting run threads in backend
+2026-02-17 08:18:01,346 INFO    MainThread:198999 [wandb_run.py:_console_start():2524] atexit reg
+2026-02-17 08:18:01,346 INFO    MainThread:198999 [wandb_run.py:_redirect():2373] redirect: wrap_raw
+2026-02-17 08:18:01,347 INFO    MainThread:198999 [wandb_run.py:_redirect():2442] Wrapping output streams.
+2026-02-17 08:18:01,347 INFO    MainThread:198999 [wandb_run.py:_redirect():2465] Redirects installed.
+2026-02-17 08:18:01,351 INFO    MainThread:198999 [wandb_init.py:init():1082] run started, returning control to user process
+2026-02-17 08:18:42,009 INFO    wandb-AsyncioManager-main:198999 [service_client.py:_forward_responses():134] Reached EOF.
+2026-02-17 08:18:42,009 INFO    wandb-AsyncioManager-main:198999 [mailbox.py:close():155] Closing mailbox, abandoning 1 handles.

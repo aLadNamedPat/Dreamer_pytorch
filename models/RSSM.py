@@ -131,7 +131,7 @@ class RSSM(nn.Module):
             embedded = F.relu(self.fc_embed_state_action(
                 torch.cat([posterior_state_t, action_t], dim=-1)
             ))
-            hidden_t = self.rnn(embedded, hidden_t)  # Clean and simple
+            hidden_t = self.rnn(embedded, hidden_t)
 
             hiddens_list.append(hidden_t)
 
@@ -165,5 +165,28 @@ class RSSM(nn.Module):
         rewards = torch.stack(rewards, dim = 1)
         return prior_states, posterior_states, hiddens, prior_mus, prior_stds, posterior_mus, posterior_stds, rewards
     
-    def imagine(self, prev_state, prev_hidden, action):
+    def imagine_one_step(self, prev_state, prev_hidden, action):
         # this will be used for generating the forward state, and the next hidden state.
+        # imaginging trajectories will use the prior
+        # hidden states should be the last state prior to imagining the next step
+        # action will be passed in batches (but only the last action)
+
+        embedded = F.relu(self.fc_embed_state_action(
+            torch.cat((prev_state, action), dim = -1)
+        ))
+
+        new_hidden = self.rnn(embedded, prev_hidden).clone() # predict the next hidden to predict the next latent state from
+        prior_state, _, _ = self.sample_prior(new_hidden, False)
+        reward = self.reward(torch.cat((prior_state, new_hidden), dim=-1))
+
+        # return the new predicted state from the prior and the reward from there
+        return prior_state, new_hidden, reward
+    
+    def encode_one_step(self, obs, prev_state, prev_hidden, prev_action):
+        embedded = F.relu(self.fc_embed_state_action(
+            torch.cat((prev_state, prev_action), dim = -1)
+        ))
+        new_hidden = self.rnn(embedded, prev_hidden) # predict the next hidden to predict the next latent state from
+        encoded_obs = self.encode(obs.unsqueeze(0))
+        posterior_state_t, posterior_mu_t, posterior_std_t = self.sample_posterior(new_hidden, encoded_obs)
+        return posterior_state_t, new_hidden

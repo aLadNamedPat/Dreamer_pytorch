@@ -1,0 +1,40 @@
+{
+  "os":  "Linux-6.8.0-94-generic-x86_64-with-glibc2.35",
+  "python":  "CPython 3.10.12",
+  "startedAt":  "2026-02-17T13:18:00.304779Z",
+  "program":  "/home/patrick/Documents/Dreamer/training.py",
+  "codePath":  "training.py",
+  "codePathLocal":  "training.py",
+  "git":  {
+    "remote":  "https://github.com/aLadNamedPat/Dreamer_pytorch.git",
+    "commit":  "0ebfcb1af2cb6612d4f7d9c27f4226bb63674f9f"
+  },
+  "email":  "pattheboy135@gmail.com",
+  "root":  "/home/patrick/Documents/Dreamer",
+  "host":  "patrick-Swift-SFX14-41G",
+  "executable":  "/usr/bin/python3",
+  "cpu_count":  8,
+  "cpu_count_logical":  16,
+  "gpu":  "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "343158915072",
+      "used":  "312807649280"
+    }
+  },
+  "memory":  {
+    "total":  "16081920000"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+      "memoryTotal":  "4294967296",
+      "cudaCores":  2560,
+      "architecture":  "Ampere",
+      "uuid":  "GPU-02c3ac50-f157-6fa9-8df8-486fa4c6e0f6"
+    }
+  ],
+  "cudaVersion":  "12.7",
+  "writerId":  "duoptg5csfa293pbolhd6icephxdktmg"
+}

@@ -14,6 +14,7 @@ from torch.distributions import Normal, kl_divergence
 import wandb
 from experience_buffer import ExperienceBuffer
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 def collect_random_episodes(env, num_episodes, max_steps_per_episode=1000):
     """Collect S random seed episodes for initial dataset"""
     buffer = ExperienceBuffer()
@@ -133,9 +134,9 @@ def compute_losses(rssm_output, reconstructed_obs, target_obs, predicted_rewards
     return reconstruction_loss, reward_loss, kl_loss, raw_kl
 
 
-def evaluate_controller(rssm, env, num_episodes=5, max_steps=1000):
+def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_dim = 200, num_episodes=5, max_steps=1000):
     """
-    Evaluate the trained RSSM with CEM planning
+    Evaluate the trained models
 
     Args:
         rssm: Trained RSSM model
@@ -146,35 +147,30 @@ def evaluate_controller(rssm, env, num_episodes=5, max_steps=1000):
     Returns:
         avg_return: Average return over episodes
     """
-    action_dim = env.action_space.shape[0]
-    # controller = PlaNetController(rssm, action_dim, horizon=12, action_repeat=2)
-    '''
-    Replace the PlaNet controller with the action value controller
-    '''
     episode_returns = []
 
     for episode in range(num_episodes):
         obs, info = env.reset()
         # Convert from [H, W, C] to [C, H, W] for PyTorch CNN and normalize
         obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1) / 255.0
-
-        controller.reset(obs_tensor)
+        
         episode_return = 0.0
 
-        for step in range(max_steps):
-            # Get action from CEM planner
-            action = controller.act(obs_tensor)
+        state = torch.zeros(1, state_dim, device=device)
+        hidden = torch.zeros(1, hidden_dim, device=device)
+        action = torch.zeros(1, action_dim, device=device)
 
-            # Take action in environment
+        for _ in range(max_steps):
+            with torch.no_grad():
+                state, hidden = rssm.encode_one_step(obs_tensor, state, hidden, action)
+                action = action_model(torch.cat((state, hidden), dim = -1))
+                action_np = action.detach().cpu().numpy()
+            action = np.clip(action_np, -1.0, 1.0)
             obs, reward, terminated, truncated, info = env.step(action)
-            # Convert from [H, W, C] to [C, H, W] for PyTorch CNN and normalize
             obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1) / 255.0
 
+
             episode_return += reward
-
-            # Update controller's internal state
-            controller.update_state(action)
-
             if terminated or truncated:
                 break
 
@@ -182,14 +178,17 @@ def evaluate_controller(rssm, env, num_episodes=5, max_steps=1000):
         print(f"Episode {episode + 1}: Return = {episode_return:.2f}")
 
     avg_return = np.mean(episode_returns)
-    std_return = np.std(episode_returns)
-
-    print(f"\nEvaluation Results:")
-    print(f"Average Return: {avg_return:.2f} ± {std_return:.2f}")
 
     return avg_return, episode_returns
 
-def imagine_trajectories(rssm : RSSM, prev_state, prev_hidden, encoded_obs, prev_action, lmbda, discount, horizon = 15):
+def compute_action_value_loss(value_model, states, hiddens, state_values):
+    # going to receive state values, states and hiddens of size [B, H, T], [B, H, T, D], and [B, H, T, L] respectively
+    actor_loss = -torch.mean(torch.sum(state_values, dim = 1))
+    value_preds = value_model(torch.cat((states[:, :-1], hiddens[:, :-1]), dim=-1)).squeeze(-1)
+    value_loss = F.mse_loss(value_preds, state_values.detach())
+    return actor_loss, value_loss
+
+def imagine_trajectories(rssm : RSSM, action_model : Action, value_model: Value, prev_state, prev_hidden, lmbda, discount, horizon = 15):
     """
     Need to compute the state value by using the lambda construction
 
@@ -199,15 +198,91 @@ def imagine_trajectories(rssm : RSSM, prev_state, prev_hidden, encoded_obs, prev
 
     need to return the state value estimate here
 
-    The process to do this --- first use the past state
+    The process to do this --- first use the past state and the previous hidden
+
+    The action model should return some action that it'd take given the latent state and the hidden
     """
-    while _ in range(horizon):
+    actions = []
+    rewards = []
+    # prev state is of size [B, T, D]
+    B1, T1, D = prev_state.size()
+    B2, T2, L = prev_hidden.size()
 
+    prev_state = prev_state.detach().reshape(B1 * T1, D)
+    prev_hidden = prev_hidden.detach().reshape(B2 * T2, L)
 
-def collect_cem_episodes(rssm, env, num_episodes=5, max_steps=1000, action_repeat=2, imagination_horizon = 15, exploration_noise=0.3):
+    states = [prev_state]
+    hiddens = [prev_hidden]
+    state_values = []
+
+    for _ in range(horizon):
+        action = action_model((torch.cat((prev_state, prev_hidden), dim = -1)))
+        prev_state, prev_hidden, reward = rssm.imagine_one_step(prev_state, prev_hidden, action)
+        states.append(prev_state)
+        hiddens.append(prev_hidden)
+        rewards.append(reward)
+        actions.append(action)
+    states = torch.stack(states, dim=1)
+    hiddens = torch.stack(hiddens, dim=1)
+    rewards = torch.stack(rewards, dim=1)
+    actions = torch.stack(actions, dim=1)
+
+    # states is a list composed of next generated states of sequences that are of size B, T, D. Total shape is 
+    # [15, B, T , D]
+    for i in range(horizon):
+        # need to adjust the horizon based on the current value of tau
+        state_value = calculate_state_value(value_model, rewards, lmbda, discount, states, hiddens, i, horizon)
+        state_values.append(state_value)
+
+    state_values = torch.stack(state_values, dim=1)
+
+    return state_values, rewards, states, hiddens, actions
+    
+def calculate_state_value(value_model : Value, rewards, lmbda, discount, states, hiddens, tau, horizon):
+    '''
+    This function will run after a trajectory of a model has been run.
+
+    Therefore, we need to pass in the full trajectory of rewards, states, and hiddens.
+
+    We will be able to return the estimated state at each 
+
+    We will make the assumption that we are calculaing from different starting points of tau
+
+    Initially, we have that tau = t, but then with each new state, we make the assumption that this is no longer true.
+
+    We should have that tau increases from tau = t to tau = t  + H
+
+    Therefore, k should decrease from H to 1
+    '''
+    B, H, T = rewards.size()
+    total_sum = torch.zeros(B, device=rewards[0].device)
+
+    one_minus_lambda = 1 - lmbda
+    for i in range(1, horizon - tau):
+        # find the lambda exponentiated
+        lambda_exp = lmbda ** (i - 1)
+
+        # should use the last state and last hidden based on h
+        est_state_val = calculate_beyond_k_state(value_model, rewards, discount, states, hiddens, i, tau, horizon)
+        total_sum += lambda_exp * est_state_val.squeeze(-1)
+
+    total_sum *= (1 - lmbda)
+    total_sum += (lmbda ** (horizon - tau - 1)) * calculate_beyond_k_state(value_model, rewards, discount, states, hiddens, horizon - tau, tau, horizon)
+    return total_sum
+
+def calculate_beyond_k_state(value_model : Value, rewards, discount, states, hiddens, k, tau, horizon):
+    # k is defined as how many states in the future we'd like to search
+    h = min(tau + k, horizon)
+    last_state, last_hidden = states[:, h], hiddens[:, h]
+    value = value_model(torch.cat((last_state, last_hidden), dim = -1)).squeeze(-1)
+    discount_t = discount ** (h - tau)
+    summed_value = value * discount_t
+    for i in range(tau, h):
+        summed_value += discount ** (i - tau) * rewards[:, i].squeeze(-1)
+    return summed_value
+
+def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_dim = 200, num_episodes=5, max_steps=1000, action_repeat=2, imagination_horizon = 15, exploration_noise=0.3):
     """
-    Collect episodes using CEM planning for dataset augmentation
-
     Args:
         rssm: Trained RSSM model
         env: Environment
@@ -216,15 +291,9 @@ def collect_cem_episodes(rssm, env, num_episodes=5, max_steps=1000, action_repea
         action_repeat: Action repeat parameter (R in paper)
 
     Returns:
-        ExperienceBuffer with CEM-generated data
+        ExperienceBuffer with action generated data
     """
     action_dim = env.action_space.shape[0]
-
-    # imagined state_dim = 30
-    # COME BACK AND CHANGE THIS
-    action_model = Action(30, action_dim)
-    value_model = Value(30)
-
     buffer = ExperienceBuffer()
 
     print(f"\n{'='*60}")
@@ -246,16 +315,22 @@ def collect_cem_episodes(rssm, env, num_episodes=5, max_steps=1000, action_repea
         obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1) / 255.0
         obs_sequence.append(obs_tensor)
 
+        state = torch.zeros(1, encoded_dim, device=device)
+        hidden = torch.zeros(1, hidden_dim, device=device)
+        action = torch.zeros(1, action_dim, device=device)
+
         for step in range(max_steps // action_repeat):
-            action = action_model(obs_tensor)
-            noise = np.random.normal(0, exploration_noise, size=action.shape)
-            action = action + noise
+            with torch.no_grad():
+                state, hidden = rssm.encode_one_step(obs_tensor, state, hidden, action)
+                action = action_model(torch.cat((state, hidden), dim = -1))
+                action_np = action.detach().cpu().numpy()
+            noise = np.random.normal(0, exploration_noise, size=action_np.shape)
+            action = action_np + noise
             action = np.clip(action, -1.0, 1.0)
 
             action_tensor = torch.tensor(action, dtype=torch.float32)
             for _ in range(action_repeat):
                 action_sequence.append(action_tensor)
-                # Take action in environment
                 obs, reward, terminated, truncated, info = env.step(action)
                 obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1) / 255.0
                 obs_sequence.append(obs_tensor)
@@ -303,7 +378,7 @@ def collect_cem_episodes(rssm, env, num_episodes=5, max_steps=1000, action_repea
 
     return buffer
 
-def train_rssm(S=5, B=32, L=50, num_epochs=100, learning_rate=1e-3,
+def train_rssm(S=5, B=32, L=50, num_epochs=100,
                evaluate_every=50, evaluation_episodes=3,
                plan_every=25, planning_episodes=3, action_repeat=2):
     """
@@ -322,7 +397,7 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100, learning_rate=1e-3,
     obs_shape = env.observation_space.shape 
     action_dim = env.action_space.shape[0]
 
-    # RSSM hyperparameters
+    # RSSM and action / value model hyperparameters
     encoded_size = 1024
     latent_size = 30
     hidden_size = 200
@@ -334,7 +409,6 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100, learning_rate=1e-3,
             "B": B,
             "L": L,
             "num_epochs": num_epochs,
-            "learning_rate": learning_rate,
             "encoded_size": encoded_size,
             "latent_size": latent_size,
             "hidden_size": hidden_size,
@@ -363,8 +437,13 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100, learning_rate=1e-3,
         device=device
     ).to(device)
 
-    optimizer = optim.Adam(rssm.parameters(), lr=learning_rate, eps=1e-4)
-    scheduler = CosineAnnealingLR(optimizer, T_max=num_epochs, eta_min=1e-5)
+    # Initialize the Action and Value models
+    action_model = Action(hidden_size + latent_size, action_dim).to(device)
+    value_model = Value(hidden_size + latent_size).to(device)
+
+    world_optimizer = optim.Adam(rssm.parameters(), lr=6e-4, eps=1e-4)
+    value_optimizer = optim.Adam(value_model.parameters(), lr = 8e-5, eps=1e-4)
+    action_optimizer = optim.Adam(action_model.parameters(), lr = 8e-5, eps=1e-4)
 
     # Collect initial dataset
     dataset = collect_random_episodes(env, S)
@@ -400,7 +479,9 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100, learning_rate=1e-3,
         if epoch % 10 == 0:
             print(f"   Batch shapes - Obs: {obs_batch.shape}, Actions: {action_batch.shape}, Rewards: {reward_batch.shape}")
 
-        optimizer.zero_grad()
+        world_optimizer.zero_grad()
+        value_optimizer.zero_grad()
+        action_optimizer.zero_grad()
 
         # Encode observations
         # obs_batch shape: [batch_size, seq_len, channels, height, width]
@@ -457,39 +538,55 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100, learning_rate=1e-3,
             debug=(epoch % 50 == 0)
         )
 
-        total_loss = reconstruction_loss + 10 * reward_loss + kl_loss
+        world_model_loss = reconstruction_loss + 10 * reward_loss + kl_loss
 
-        total_loss.backward()
+        world_model_loss.backward()
         torch.nn.utils.clip_grad_norm_(rssm.parameters(), max_norm=1000.0)  # Paper uses 1000
-        optimizer.step()
-        scheduler.step()
+        world_optimizer.step()
+
+        # Need to imagine trajectories here using the imagine_trajectories function. Will use the posterior states that were generated
+        # posterior states are of size [B, T, D] where there are B batches, a sequence of length T, and posterior states possess dimensionality D
+        state_values, rewards, states, imagined_hiddens, actions = imagine_trajectories(rssm, action_model, value_model, posterior_states.detach(), hiddens.detach(), lmbda = 0.95, discount = 0.99, horizon = 15)
+
+        actor_loss, value_loss = compute_action_value_loss(
+            value_model, states, imagined_hiddens, state_values
+        )
+        action_optimizer.zero_grad()
+        value_optimizer.zero_grad()
+
+        actor_loss.backward(retain_graph=True)
+        value_loss.backward()
+
+        action_optimizer.step()
+        value_optimizer.step()
 
         wandb.log({
             "epoch": epoch,
-            "total_loss": total_loss.item(),
+            "world model loss": world_model_loss.item(),
+            "actor model loss" : actor_loss.item(),
+            "value model loss" : value_loss.item(),
             "reconstruction_loss": reconstruction_loss.item(),
             "reward_loss": reward_loss.item(),
             "kl_loss": kl_loss.item(),
             "raw_kl": raw_kl.item(),  # Add this line
-            "learning_rate": scheduler.get_last_lr()[0]
         })
 
         if epoch % 10 == 0:
-            print(f"Epoch {epoch}: Total Loss: {total_loss.item():.4f}, "
+            print(f"Epoch {epoch}: World Model Loss: {world_model_loss.item():.4f}, Actor Model Loss: {actor_loss.item():.4f}, Value Model Loss : {value_loss.item():.4f}"
                   f"Reconstruction: {reconstruction_loss.item():.4f}, "
                   f"Reward: {reward_loss.item():.4f}, "
                   f"KL: {kl_loss.item():.4f}")
 
         # Quick progress indicator for non-milestone epochs
         elif epoch % 5 == 0:
-            print(f"   Epoch {epoch}: Loss={total_loss.item():.4f}")
+            print(f"   Epoch {epoch}: World Loss={world_model_loss.item():.4f}, Actor Loss={actor_loss.item():.4f}, Value Loss={value_loss.item():.4f}")
 
         if epoch % evaluate_every == 0 and epoch > 0:
             print(f"\n=== Evaluating Controller at Epoch {epoch} ===")
             rssm.eval()  # Set to evaluation mode
 
-            avg_return, episode_returns = evaluate_controller(
-                rssm, env, num_episodes=evaluation_episodes, max_steps=1000
+            avg_return, episode_returns = evaluate_model(
+                rssm, action_model, env, action_dim, num_episodes=evaluation_episodes, max_steps=1000
             )
 
             # Log evaluation results to wandb
@@ -506,7 +603,6 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100, learning_rate=1e-3,
                 torch.save({
                     'epoch': epoch,
                     'model_state_dict': rssm.state_dict(),
-                    'optimizer_state_dict': optimizer.state_dict(),
                     'best_eval_return': best_eval_return,
                     'avg_return': avg_return,
                     'episode_returns': episode_returns
@@ -519,7 +615,6 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100, learning_rate=1e-3,
                 torch.save({
                     'epoch': epoch,
                     'model_state_dict': rssm.state_dict(),
-                    'optimizer_state_dict': optimizer.state_dict(),
                     'best_eval_return': best_eval_return,
                     'avg_return': avg_return,
                     'episode_returns': episode_returns
@@ -531,17 +626,16 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100, learning_rate=1e-3,
 
         # CEM Planning and dataset augmentation
         if epoch % plan_every == 0 and epoch > 0:
-            print(f"\n=== CEM Planning and Data Collection at Epoch {epoch} ===")
+            print(f"\n=== Planning and Data Collection at Epoch {epoch} ===")
             rssm.eval()  # Set to evaluation mode for planning
 
-            # Collect new data using CEM planning
-            cem_buffer = collect_cem_episodes(
-                rssm, env, num_episodes=planning_episodes,
+            # Collect new data using
+            action_buffer = collect_action_episodes(
+                rssm, action_model, env, encoded_dim = latent_size, hidden_dim = hidden_size, num_episodes=planning_episodes,
                 max_steps=1000, action_repeat=action_repeat
             )
 
-            # Merge CEM data into training dataset
-            dataset.merge_buffer(cem_buffer)
+            dataset.merge_buffer(action_buffer)
 
             # Log dataset statistics
             wandb.log({

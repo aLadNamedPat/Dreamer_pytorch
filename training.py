@@ -335,7 +335,7 @@ def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_di
         # Reset environment
         obs, info = env.reset()
         obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1).to(device) / 255.0
-        obs_sequence.append(obs_tensor)
+        obs_sequence.append(obs_tensor.cpu())
 
         state = torch.zeros(1, encoded_dim, device=device)
         hidden = torch.zeros(1, hidden_dim, device=device)
@@ -355,7 +355,7 @@ def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_di
                 action_sequence.append(action_tensor)
                 obs, reward, terminated, truncated, info = env.step(action_clipped)
                 obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1).to(device) / 255.0
-                obs_sequence.append(obs_tensor)
+                obs_sequence.append(obs_tensor.cpu())
                 reward_sequence.append(torch.tensor(reward, dtype=torch.float32))
 
                 episode_reward += reward

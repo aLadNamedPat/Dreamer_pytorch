@@ -183,10 +183,10 @@ def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_d
 
     return avg_return, episode_returns
 
-def compute_action_value_loss(value_model, states, hiddens, state_values):
+def compute_action_value_loss(value_model, states, hiddens, state_values, discounts):
     # going to receive state values, states and hiddens of size [B, H, T], [B, H, T, D], and [B, H, T, L] respectively
-    actor_loss = -torch.mean(torch.sum(state_values, dim = 1))
-    value_preds = value_model(torch.cat((states[:, :-1], hiddens[:, :-1]), dim=-1)).squeeze(-1)
+    actor_loss = -torch.mean(discounts.unsqueeze(0) * state_values)
+    value_preds = value_model(torch.cat((states[:, :-1].detach(), hiddens[:, :-1].detach()), dim=-1)).squeeze(-1)
     value_loss = F.mse_loss(value_preds, state_values.detach())
     return actor_loss, value_loss
 
@@ -233,7 +233,7 @@ def imagine_trajectories(rssm : RSSM, action_model : Action, value_model: Value,
     # [B, H, T, D] after stacking
     all_values = value_model(torch.cat((states, hiddens), dim=-1)).squeeze(-1)  # (B, H+1)
     state_values = calculate_returns_single(rewards.squeeze(-1), all_values, lmbda, discount, horizon)
-
+    discounts = torch.tensor([discount ** t for t in range(horizon)], device=prev_state.device)
     # Commented out for faster recursive implementation
     # for i in range(horizon):
     #     # need to adjust the horizon based on the current value of tau
@@ -242,7 +242,7 @@ def imagine_trajectories(rssm : RSSM, action_model : Action, value_model: Value,
     # 
     # state_values = torch.stack(state_values, dim=1)
 
-    return state_values, rewards, states, hiddens, actions
+    return state_values, rewards, states, hiddens, actions, discounts
 
 def calculate_returns_single(rewards, all_values, lmbda, discount, horizon):
     """
@@ -361,14 +361,15 @@ def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_di
                 episode_reward += reward
                 episode_steps += 1
 
-                # Progress indicator every 100 steps
-                if (step + 1) % 100 == 0:
-                    print(f"    Step {step + 1}/{max_steps} | Reward: {episode_reward:.2f}")
 
                 if terminated or truncated:
                     reason = "terminated" if terminated else "truncated"
                     print(f"  Episode ended at step {episode_steps} ({reason})")
                     break
+            # Progress indicator every 100 steps
+            if (episode_steps + 1) % 100 == 0:
+                print(f"    Step {episode_steps + 1}/{max_steps} | Reward: {episode_reward:.2f}")
+                
             action = action_tensor
             if terminated or truncated:
                 break
@@ -427,7 +428,7 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100,
     hidden_size = 200
 
     wandb.init(
-        project="planet-rssm-dmc-walker",
+        project="dreamer-dmc-walker",
         config={
             "S": S,
             "B": B,
@@ -507,6 +508,7 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100,
         value_optimizer.zero_grad()
         action_optimizer.zero_grad()
 
+
         # Encode observations
         # obs_batch shape: [batch_size, seq_len, channels, height, width]
         batch_size, seq_len = obs_batch.shape[:2]
@@ -567,23 +569,30 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100,
         world_model_loss.backward()
         torch.nn.utils.clip_grad_norm_(rssm.parameters(), max_norm=1000.0)  # Paper uses 1000
         world_optimizer.step()
+        for p in rssm.parameters():
+            p.requires_grad_(False)
 
         # Need to imagine trajectories here using the imagine_trajectories function. Will use the posterior states that were generated
         # posterior states are of size [B, T, D] where there are B batches, a sequence of length T, and posterior states possess dimensionality D
-        state_values, rewards, states, imagined_hiddens, actions = imagine_trajectories(rssm, action_model, value_model, posterior_states.detach(), hiddens.detach(), lmbda = 0.95, discount = 0.99, horizon = 15)
+        state_values, rewards, states, imagined_hiddens, actions, discounts = imagine_trajectories(rssm, action_model, value_model, posterior_states.detach(), hiddens.detach(), lmbda = 0.95, discount = 0.99, horizon = 15)
 
         actor_loss, value_loss = compute_action_value_loss(
-            value_model, states, imagined_hiddens, state_values
+            value_model, states, imagined_hiddens, state_values, discounts
         )
         action_optimizer.zero_grad()
-        value_optimizer.zero_grad()
-
         actor_loss.backward(retain_graph=True)
-        value_loss.backward()
-
+        torch.nn.utils.clip_grad_norm_(action_model.parameters(), max_norm=100.0)
         action_optimizer.step()
+
+
+        value_optimizer.zero_grad()
+        value_loss.backward()
+        torch.nn.utils.clip_grad_norm_(value_model.parameters(), max_norm=100.0)
         value_optimizer.step()
 
+        for p in rssm.parameters():
+            p.requires_grad_(True)
+            
         wandb.log({
             "epoch": epoch,
             "world model loss": world_model_loss.item(),

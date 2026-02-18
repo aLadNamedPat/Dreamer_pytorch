@@ -134,7 +134,7 @@ def compute_losses(rssm_output, reconstructed_obs, target_obs, predicted_rewards
     return reconstruction_loss, reward_loss, kl_loss, raw_kl
 
 
-def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_dim = 200, num_episodes=5, max_steps=1000):
+def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_dim = 200, num_episodes=5, max_steps=1000, action_repeat = 2):
     """
     Evaluate the trained models
 
@@ -160,19 +160,21 @@ def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_d
         hidden = torch.zeros(1, hidden_dim, device=device)
         action = torch.zeros(1, action_dim, device=device)
 
-        for _ in range(max_steps):
+        for _ in range(max_steps // action_repeat):
             with torch.no_grad():
                 state, hidden = rssm.encode_one_step(obs_tensor, state, hidden, action)
                 action = action_model(torch.cat((state, hidden), dim = -1))
                 action_np = action.detach().cpu().numpy()
             action_clipped = np.clip(action_np, -1.0, 1.0)
-            obs, reward, terminated, truncated, info = env.step(action_clipped.squeeze())
-            action_tensor = torch.tensor(action_clipped, dtype=torch.float32).to(device)
+
+            for _ in range(action_repeat):
+                obs, reward, terminated, truncated, info = env.step(action_clipped.squeeze())
+                action_tensor = torch.tensor(action_clipped, dtype=torch.float32).to(device)
+                episode_return += reward
+                obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1).to(device) / 255.0
+                if terminated or truncated:
+                    break
             action = action_tensor  # so next iteration's encode_one_step gets a tensor
-            obs_tensor = torch.tensor(obs.copy(), dtype=torch.float32).permute(2, 0, 1).to(device) / 255.0
-
-
-            episode_return += reward
             if terminated or truncated:
                 break
 

@@ -30,29 +30,35 @@ class RSSM(nn.Module):
         self.rnn = nn.GRUCell(hidden_size, hidden_size)
 
         self.prior = nn.Sequential(
-            nn.Linear(hidden_size, 200),
+            nn.Linear(hidden_size, 300),
             nn.ReLU(),
-            nn.Linear(200, 200),
+            nn.Linear(300, 300),
+            nn.ReLU(),
+            nn.Linear(300,300),
             nn.ReLU()
         )
-        self.prior_mu = nn.Linear(200, latent_size)
-        self.prior_std = nn.Linear(200, latent_size)
+        self.prior_mu = nn.Linear(300, latent_size)
+        self.prior_std = nn.Linear(300, latent_size)
 
         self.posterior = nn.Sequential(
-            nn.Linear(hidden_size + encoded_size, 200),
+            nn.Linear(hidden_size + encoded_size, 300),
             nn.ReLU(),
-            nn.Linear(200, 200),
+            nn.Linear(300, 300),
+            nn.ReLU(),
+            nn.Linear(300, 300),
             nn.ReLU()
         )
-        self.posterior_mu = nn.Linear(200, latent_size)
-        self.posterior_std = nn.Linear(200, latent_size)
+        self.posterior_mu = nn.Linear(300, latent_size)
+        self.posterior_std = nn.Linear(300, latent_size)
 
         self.reward = nn.Sequential(
-            nn.Linear(latent_size + hidden_size, 200),
+            nn.Linear(latent_size + hidden_size, 300),
             nn.ReLU(),
-            nn.Linear(200, 200),
+            nn.Linear(300, 300),
             nn.ReLU(),
-            nn.Linear(200, 1)
+            nn.Linear(300, 300),
+            nn.ReLU(),
+            nn.Linear(300, 1)
         )
 
     def sample_prior(self, hidden_state, deterministic=False):

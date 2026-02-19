@@ -187,7 +187,7 @@ def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_d
 
 def compute_action_value_loss(value_model, states, hiddens, state_values, discounts):
     # going to receive state values, states and hiddens of size [B, H, T], [B, H, T, D], and [B, H, T, L] respectively
-    actor_loss = -torch.mean(discounts.unsqueeze(0) * state_values)
+    actor_loss = -torch.mean(state_values)
     value_preds = value_model(torch.cat((states[:, :-1].detach(), hiddens[:, :-1].detach()), dim=-1)).squeeze(-1)
     value_loss = F.mse_loss(value_preds, state_values.detach())
     return actor_loss, value_loss

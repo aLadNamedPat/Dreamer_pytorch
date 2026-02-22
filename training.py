@@ -191,7 +191,7 @@ def compute_action_value_loss(value_model, states, hiddens, state_values, discou
     # going to receive state values, states and hiddens of size [B, H, T], [B, H, T, D], and [B, H, T, L] respectively
     actor_loss = -torch.mean(state_values)
     value_preds = value_model(torch.cat((states[:, :-1].detach(), hiddens[:, :-1].detach()), dim=-1))
-    value_loss = -value_preds.log_prob(state_values.detach()).mean()
+    value_loss = -value_preds.log_prob(state_values.detach().unsqueeze(-1)).mean()
     return actor_loss, value_loss
 
 def imagine_trajectories(rssm : RSSM, action_model : Action, value_model: Value, prev_state, prev_hidden, lmbda, discount, horizon = 15):

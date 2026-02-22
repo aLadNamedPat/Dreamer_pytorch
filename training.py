@@ -113,7 +113,7 @@ def compute_losses(rssm_output, reconstructed_obs, target_obs, predicted_rewards
     # reconstruction_loss = mse_per_pixel.sum(dim=(2, 3, 4)).mean()
     reconstruction_dist = Normal(reconstructed_obs, 1.0)
     reconstruction_loss = -reconstruction_dist.log_prob(target_obs).sum(dim=(2,3,4)).mean()
-    
+
     reward_dist = Normal(predicted_rewards, 1.0)
     if target_rewards.dim() == 2:
         target_rewards = target_rewards.unsqueeze(-1)
@@ -190,8 +190,8 @@ def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_d
 def compute_action_value_loss(value_model, states, hiddens, state_values, discounts):
     # going to receive state values, states and hiddens of size [B, H, T], [B, H, T, D], and [B, H, T, L] respectively
     actor_loss = -torch.mean(state_values)
-    value_preds = value_model(torch.cat((states[:, :-1].detach(), hiddens[:, :-1].detach()), dim=-1)).squeeze(-1)
-    value_loss = -value_preds.log_prob(state_values)
+    value_preds = value_model(torch.cat((states[:, :-1].detach(), hiddens[:, :-1].detach()), dim=-1))
+    value_loss = -value_preds.log_prob(state_values.detach()).mean()
     return actor_loss, value_loss
 
 def imagine_trajectories(rssm : RSSM, action_model : Action, value_model: Value, prev_state, prev_hidden, lmbda, discount, horizon = 15):
@@ -235,7 +235,7 @@ def imagine_trajectories(rssm : RSSM, action_model : Action, value_model: Value,
 
     # states is a list composed of next generated states of sequences that are of size B, T, D. Total shape is 
     # [B, H, T, D] after stacking
-    all_values = value_model(torch.cat((states, hiddens), dim=-1)).squeeze(-1)  # (B, H+1)
+    all_values = value_model(torch.cat((states, hiddens), dim=-1)).mean.squeeze(-1)  # (B, H+1)
     state_values = calculate_returns_single(rewards.squeeze(-1), all_values, lmbda, discount, horizon)
     discounts = torch.tensor([discount ** t for t in range(horizon)], device=prev_state.device)
     # Commented out for faster recursive implementation

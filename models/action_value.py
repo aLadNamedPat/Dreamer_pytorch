@@ -13,7 +13,7 @@ class Action(nn.Module):
         # action should be as well as a standard devaition. (i.e. the action returns a gaussian)
         self.min_std = min_std
         self.register_buffer('init_std', torch.tensor(float(init_std)))
-        
+
         self.layer_1 = nn.Linear(imagined_state_dim, hidden_dim[0])
         self.layer_2 = nn.Linear(hidden_dim[0], hidden_dim[1])
         self.layer_3 = nn.Linear(hidden_dim[1], hidden_dim[2])
@@ -41,7 +41,7 @@ class Value(nn.Module):
         self.layer_2 = nn.Linear(hidden_dim[0], hidden_dim[1])
         self.layer_3 = nn.Linear(hidden_dim[1], hidden_dim[2])
         self.out = nn.Linear(hidden_dim[2], 1)
-    
+
     def forward(self, x):
         x = F.elu(self.layer_1(x))
         x = F.elu(self.layer_2(x))

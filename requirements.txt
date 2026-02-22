@@ -1,0 +1,28 @@
+# Core ML/DL Framework
+torch>=2.0.0
+torchvision>=0.15.0
+numpy>=1.21.0
+
+# Environment and RL
+gymnasium>=0.28.0
+dm-control>=1.0.0
+mujoco>=2.3.0
+opencv-python>=4.5.0
+
+# Logging and Monitoring
+wandb>=0.15.0
+
+# Image Processing
+Pillow>=8.3.0
+imageio>=2.9.0
+
+# Scientific Computing
+scipy>=1.7.0
+
+# Utilities
+tqdm>=4.62.0
+matplotlib>=3.5.0
+
+# Optional but recommended for performance
+# CUDA support (uncomment if using GPU)
+# torch-audio>=2.0.0  # if you need audio processing

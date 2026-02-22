@@ -31,31 +31,31 @@ class RSSM(nn.Module):
 
         self.prior = nn.Sequential(
             nn.Linear(hidden_size, 300),
-            nn.ReLU(),
+            nn.ELU(),
             nn.Linear(300, 300),
             # nn.ReLU(),
             # nn.Linear(300,300),
-            nn.ReLU()
+            nn.ELU()
         )
         self.prior_mu = nn.Linear(300, latent_size)
         self.prior_std = nn.Linear(300, latent_size)
 
         self.posterior = nn.Sequential(
             nn.Linear(hidden_size + encoded_size, 300),
-            nn.ReLU(),
+            nn.ELU(),
             nn.Linear(300, 300),
             # nn.ReLU(),
             # nn.Linear(300, 300),
-            nn.ReLU()
+            nn.ELU()
         )
         self.posterior_mu = nn.Linear(300, latent_size)
         self.posterior_std = nn.Linear(300, latent_size)
 
         self.reward = nn.Sequential(
             nn.Linear(latent_size + hidden_size, 300),
-            nn.ReLU(),
+            nn.ELU(),
             nn.Linear(300, 300),
-            nn.ReLU(),
+            nn.ELU(),
             # nn.Linear(300, 300),
             # nn.ReLU(),
             nn.Linear(300, 1)

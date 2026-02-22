@@ -716,6 +716,6 @@ if __name__ == "__main__":
     final_dmc_env = create_dmc_env_safe(domain_name="walker", task_name="walk", height=64, width=64, camera_id=0)
     final_eval_env = DMCWrapper(final_dmc_env)
 
-    final_avg_return, _ = evaluate_controller(trained_rssm, final_eval_env, num_episodes=10)
+    final_avg_return, _ = evaluate_model(trained_rssm, final_eval_env, num_episodes=10)
     final_eval_env.close()
     print(f"Final Average Return: {final_avg_return:.2f}")

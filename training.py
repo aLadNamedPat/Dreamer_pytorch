@@ -109,9 +109,11 @@ def compute_losses(rssm_output, reconstructed_obs, target_obs, predicted_rewards
     """
     prior_states, posterior_states, hiddens, prior_mus, prior_stds, \
         posterior_mus, posterior_stds, rewards = rssm_output
-    mse_per_pixel = (reconstructed_obs - target_obs) ** 2
-    reconstruction_loss = mse_per_pixel.sum(dim=(2, 3, 4)).mean()
-
+    # mse_per_pixel = (reconstructed_obs - target_obs) ** 2
+    # reconstruction_loss = mse_per_pixel.sum(dim=(2, 3, 4)).mean()
+    reconstruction_dist = Normal(reconstructed_obs, 1.0)
+    reconstruction_loss = -reconstruction_dist.log_prob(target_obs).sum(dim=(2,3,4)).mean()
+    
     reward_dist = Normal(predicted_rewards, 1.0)
     if target_rewards.dim() == 2:
         target_rewards = target_rewards.unsqueeze(-1)
@@ -163,7 +165,7 @@ def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_d
         for _ in range(max_steps // action_repeat):
             with torch.no_grad():
                 state, hidden = rssm.encode_one_step(obs_tensor, state, hidden, action)
-                action = action_model(torch.cat((state, hidden), dim = -1))
+                action = action_model(torch.cat((state, hidden), dim = -1)).sample()
                 action_np = action.detach().cpu().numpy()
             action_clipped = np.clip(action_np, -1.0, 1.0)
 
@@ -189,7 +191,7 @@ def compute_action_value_loss(value_model, states, hiddens, state_values, discou
     # going to receive state values, states and hiddens of size [B, H, T], [B, H, T, D], and [B, H, T, L] respectively
     actor_loss = -torch.mean(state_values)
     value_preds = value_model(torch.cat((states[:, :-1].detach(), hiddens[:, :-1].detach()), dim=-1)).squeeze(-1)
-    value_loss = F.mse_loss(value_preds, state_values.detach())
+    value_loss = -value_preds.log_prob(state_values)
     return actor_loss, value_loss
 
 def imagine_trajectories(rssm : RSSM, action_model : Action, value_model: Value, prev_state, prev_hidden, lmbda, discount, horizon = 15):
@@ -220,7 +222,7 @@ def imagine_trajectories(rssm : RSSM, action_model : Action, value_model: Value,
     state_values = []
 
     for _ in range(horizon):
-        action = action_model((torch.cat((prev_state, prev_hidden), dim = -1)))
+        action = action_model((torch.cat((prev_state, prev_hidden), dim = -1))).sample()
         prev_state, prev_hidden, reward = rssm.imagine_one_step(prev_state, prev_hidden, action)
         states.append(prev_state)
         hiddens.append(prev_hidden)
@@ -346,7 +348,7 @@ def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_di
         for step in range(max_steps // action_repeat):
             with torch.no_grad():
                 state, hidden = rssm.encode_one_step(obs_tensor, state, hidden, action)
-                action = action_model(torch.cat((state, hidden), dim = -1))
+                action = action_model(torch.cat((state, hidden), dim = -1)).sample()
                 action_np = action.detach().cpu().numpy()
             noise = np.random.normal(0, exploration_noise, size=action_np.shape)
             action = action_np + noise

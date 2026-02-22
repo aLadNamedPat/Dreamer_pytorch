@@ -33,8 +33,8 @@ class RSSM(nn.Module):
             nn.Linear(hidden_size, 300),
             nn.ReLU(),
             nn.Linear(300, 300),
-            nn.ReLU(),
-            nn.Linear(300,300),
+            # nn.ReLU(),
+            # nn.Linear(300,300),
             nn.ReLU()
         )
         self.prior_mu = nn.Linear(300, latent_size)
@@ -44,8 +44,8 @@ class RSSM(nn.Module):
             nn.Linear(hidden_size + encoded_size, 300),
             nn.ReLU(),
             nn.Linear(300, 300),
-            nn.ReLU(),
-            nn.Linear(300, 300),
+            # nn.ReLU(),
+            # nn.Linear(300, 300),
             nn.ReLU()
         )
         self.posterior_mu = nn.Linear(300, latent_size)
@@ -56,8 +56,8 @@ class RSSM(nn.Module):
             nn.ReLU(),
             nn.Linear(300, 300),
             nn.ReLU(),
-            nn.Linear(300, 300),
-            nn.ReLU(),
+            # nn.Linear(300, 300),
+            # nn.ReLU(),
             nn.Linear(300, 1)
         )
 

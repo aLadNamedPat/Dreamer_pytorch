@@ -1,7 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.distributions import Normal
+from torch.distributions import Normal, Independent, TransformedDistribution
+from torch.distributions import TanhTransform as TanhBijector
 
 # Found the official implementation super helpful for finding the differences between what the paper specifies and what
 # was actually implemented: https://github.com/google-research/dreamer?tab=readme-ov-file
@@ -31,6 +32,8 @@ class Action(nn.Module):
         init_std = torch.log(torch.exp(self.init_std) - 1)  
         std = F.softplus(std_raw + init_std) + self.min_std 
         dist = Normal(mu, std)
+        dist = TransformedDistribution(dist, TanhBijector())
+        dist = Independent(dist, 1)
         return dist
 
 class Value(nn.Module):

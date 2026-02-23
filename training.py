@@ -165,7 +165,7 @@ def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_d
         for _ in range(max_steps // action_repeat):
             with torch.no_grad():
                 state, hidden = rssm.encode_one_step(obs_tensor, state, hidden, action)
-                action = action_model(torch.cat((state, hidden), dim = -1)).sample()
+                action = action_model(torch.cat((state, hidden), dim = -1)).mode()
                 action_np = action.detach().cpu().numpy()
             action_clipped = np.clip(action_np, -1.0, 1.0)
 
@@ -222,7 +222,7 @@ def imagine_trajectories(rssm : RSSM, action_model : Action, value_model: Value,
     state_values = []
 
     for _ in range(horizon):
-        action = action_model((torch.cat((prev_state, prev_hidden), dim = -1))).sample()
+        action = action_model((torch.cat((prev_state, prev_hidden), dim = -1))).rsample()
         prev_state, prev_hidden, reward = rssm.imagine_one_step(prev_state, prev_hidden, action)
         states.append(prev_state)
         hiddens.append(prev_hidden)
@@ -348,7 +348,7 @@ def collect_action_episodes(rssm, action_model, env, encoded_dim = 30, hidden_di
         for step in range(max_steps // action_repeat):
             with torch.no_grad():
                 state, hidden = rssm.encode_one_step(obs_tensor, state, hidden, action)
-                action = action_model(torch.cat((state, hidden), dim = -1)).sample()
+                action = action_model(torch.cat((state, hidden), dim = -1)).rsample()
                 action_np = action.detach().cpu().numpy()
             noise = np.random.normal(0, exploration_noise, size=action_np.shape)
             action = action_np + noise
@@ -568,7 +568,7 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100,
             debug=(epoch % 50 == 0)
         )
 
-        world_model_loss = reconstruction_loss + 10 * reward_loss + kl_loss
+        world_model_loss = reconstruction_loss + reward_loss + kl_loss
 
         world_model_loss.backward()
         torch.nn.utils.clip_grad_norm_(rssm.parameters(), max_norm=1000.0)  # Paper uses 1000
@@ -703,7 +703,7 @@ if __name__ == "__main__":
         S=5, B=50, L=50,
         num_epochs= 100000,
         evaluate_every=500,
-        evaluation_episodes=1,
+        evaluation_episodes=3,
         plan_every=100,  # CEM planning every 25 epochs
         planning_episodes=1,
         action_repeat=1  # Action repeat parameter R

@@ -191,8 +191,8 @@ def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_d
 def compute_action_value_loss(value_model, states, hiddens, state_values, discounts):
     # going to receive state values, states and hiddens of size [B, H, T], [B, H, T, D], and [B, H, T, L] respectively
     actor_loss = -torch.mean(state_values)
-    value_preds = value_model(torch.cat((states[:, :-1].detach(), hiddens[:, :-1].detach()), dim=-1))
-    value_loss = -value_preds.log_prob(state_values.detach().unsqueeze(-1)).mean()
+    value_preds = value_model(torch.cat((states[:, :-1].detach(), hiddens[:, :-1].detach()), dim=-1)).squeeze(-1)
+    value_loss = F.mse_loss(value_preds, state_values.detach())
     return actor_loss, value_loss
 
 def imagine_trajectories(rssm : RSSM, action_model : Action, value_model: Value, prev_state, prev_hidden, lmbda, discount, horizon = 15):
@@ -564,7 +564,7 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100,
             debug=(epoch % 50 == 0)
         )
 
-        world_model_loss = reconstruction_loss + reward_loss + kl_loss
+        world_model_loss = reconstruction_loss + 10 * reward_loss + kl_loss
         world_optimizer.zero_grad()
         value_optimizer.zero_grad()
         action_optimizer.zero_grad()
@@ -702,7 +702,7 @@ if __name__ == "__main__":
         evaluation_episodes=3,
         plan_every=100,  # CEM planning every 25 epochs
         planning_episodes=1,
-        action_repeat=2  # Action repeat parameter R
+        action_repeat=1  # Action repeat parameter R
     )
 
     print("Training complete! Model saved as 'trained_rssm_dmc_walker.pth'")

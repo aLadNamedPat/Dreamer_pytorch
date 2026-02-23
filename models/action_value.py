@@ -39,7 +39,6 @@ class Action(nn.Module):
 class Value(nn.Module):
     def __init__(self, imagined_state_dim, hidden_dim = [300, 300, 300], std = 1):
         super().__init__()
-        self.std = std
         self.layer_1 = nn.Linear(imagined_state_dim, hidden_dim[0])
         self.layer_2 = nn.Linear(hidden_dim[0], hidden_dim[1])
         self.layer_3 = nn.Linear(hidden_dim[1], hidden_dim[2])
@@ -50,6 +49,4 @@ class Value(nn.Module):
         x = F.elu(self.layer_2(x))
         x = F.elu(self.layer_3(x))
         out = self.out(x)
-
-        dist = Normal(out, self.std)
-        return dist
+        return out

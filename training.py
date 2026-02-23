@@ -509,11 +509,6 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100,
         if epoch % 10 == 0:
             print(f"   Batch shapes - Obs: {obs_batch.shape}, Actions: {action_batch.shape}, Rewards: {reward_batch.shape}")
 
-        world_optimizer.zero_grad()
-        value_optimizer.zero_grad()
-        action_optimizer.zero_grad()
-
-
         # Encode observations
         # obs_batch shape: [batch_size, seq_len, channels, height, width]
         batch_size, seq_len = obs_batch.shape[:2]
@@ -570,6 +565,9 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100,
         )
 
         world_model_loss = reconstruction_loss + reward_loss + kl_loss
+        world_optimizer.zero_grad()
+        value_optimizer.zero_grad()
+        action_optimizer.zero_grad()
 
         world_model_loss.backward()
         torch.nn.utils.clip_grad_norm_(rssm.parameters(), max_norm=1000.0)  # Paper uses 1000
@@ -584,13 +582,10 @@ def train_rssm(S=5, B=32, L=50, num_epochs=100,
         actor_loss, value_loss = compute_action_value_loss(
             value_model, states, imagined_hiddens, state_values, discounts
         )
-        action_optimizer.zero_grad()
         actor_loss.backward(retain_graph=True)
         torch.nn.utils.clip_grad_norm_(action_model.parameters(), max_norm=100.0)
         action_optimizer.step()
 
-
-        value_optimizer.zero_grad()
         value_loss.backward()
         torch.nn.utils.clip_grad_norm_(value_model.parameters(), max_norm=100.0)
         value_optimizer.step()

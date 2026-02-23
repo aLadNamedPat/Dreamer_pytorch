@@ -109,10 +109,10 @@ def compute_losses(rssm_output, reconstructed_obs, target_obs, predicted_rewards
     """
     prior_states, posterior_states, hiddens, prior_mus, prior_stds, \
         posterior_mus, posterior_stds, rewards = rssm_output
-    # mse_per_pixel = (reconstructed_obs - target_obs) ** 2
-    # reconstruction_loss = mse_per_pixel.sum(dim=(2, 3, 4)).mean()
-    reconstruction_dist = Normal(reconstructed_obs, 1.0)
-    reconstruction_loss = -reconstruction_dist.log_prob(target_obs).sum(dim=(2,3,4)).mean()
+    mse_per_pixel = (reconstructed_obs - target_obs) ** 2
+    reconstruction_loss = mse_per_pixel.sum(dim=(2, 3, 4)).mean()
+    # reconstruction_dist = Normal(reconstructed_obs, 1.0)
+    # reconstruction_loss = -reconstruction_dist.log_prob(target_obs).sum(dim=(2,3,4)).mean()
 
     reward_dist = Normal(predicted_rewards, 1.0)
     if target_rewards.dim() == 2:

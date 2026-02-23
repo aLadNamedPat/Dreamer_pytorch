@@ -2,7 +2,7 @@ import random
 import torch
 
 class ExperienceBuffer:
-    def __init__(self, max_size=1000000):
+    def __init__(self, max_size=10000000):
         """Store episodes for training"""
         self.observations = []
         self.actions = []
@@ -60,7 +60,7 @@ class ExperienceBuffer:
             reward_batch.append(reward_seq)
         
         return (
-            torch.stack([torch.stack(seq) for seq in obs_batch]),
+            torch.stack([torch.stack(seq) for seq in obs_batch]).float() / 255.0,
             torch.stack([torch.stack(seq) for seq in action_batch]),
             torch.stack([torch.stack(seq) for seq in reward_batch])
         )

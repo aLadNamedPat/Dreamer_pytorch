@@ -165,7 +165,8 @@ def evaluate_model(rssm, action_model, env, action_dim, state_dim = 30, hidden_d
         for _ in range(max_steps // action_repeat):
             with torch.no_grad():
                 state, hidden = rssm.encode_one_step(obs_tensor, state, hidden, action)
-                action = action_model(torch.cat((state, hidden), dim = -1)).mode()
+                dist = action_model(torch.cat((state, hidden), dim = -1))
+                action = torch.tanh(dist.base_dist.base_dist.mean)
                 action_np = action.detach().cpu().numpy()
             action_clipped = np.clip(action_np, -1.0, 1.0)
 

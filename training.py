@@ -236,7 +236,7 @@ def imagine_trajectories(rssm : RSSM, action_model : Action, value_model: Value,
 
     # states is a list composed of next generated states of sequences that are of size B, T, D. Total shape is 
     # [B, H, T, D] after stacking
-    all_values = value_model(torch.cat((states, hiddens), dim=-1)).mean.squeeze(-1)  # (B, H+1)
+    all_values = value_model(torch.cat((states, hiddens), dim=-1)).squeeze(-1)  # (B, H+1)
     state_values = calculate_returns_single(rewards.squeeze(-1), all_values, lmbda, discount, horizon)
     discounts = torch.tensor([discount ** t for t in range(horizon)], device=prev_state.device)
     # Commented out for faster recursive implementation

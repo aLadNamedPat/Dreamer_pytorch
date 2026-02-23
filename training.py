@@ -702,7 +702,7 @@ if __name__ == "__main__":
         evaluation_episodes=3,
         plan_every=100,  # CEM planning every 25 epochs
         planning_episodes=1,
-        action_repeat=1  # Action repeat parameter R
+        action_repeat=2  # Action repeat parameter R
     )
 
     print("Training complete! Model saved as 'trained_rssm_dmc_walker.pth'")
